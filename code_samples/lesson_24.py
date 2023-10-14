@@ -8,6 +8,8 @@
 5. Создание экземпляра класса
 6. Посмотрели ID экземпляра класса и Тип экземпляра класса
 7. Создали первое поле класса
+8. Self - это ссылка на сам экземпляр класса
+9. Init - это специальный метод, который вызывается при создании экземпляра класса
 """
 
 """
@@ -23,21 +25,19 @@
 
 
 class NestedDoll:
-    # Поля класса
-    color = "red"
-    pass
+    # Init - это специальный метод, который вызывается при создании экземпляра класса
+    # В него передаются параметры, которые мы передаем при создании экземпляра класса
+    # self - это ссылка на сам экземпляр класса
+    # self - это обязательный параметр
+    def __init__(self, color: str, size: int, material: str) -> None:
+        self.color = color
+        self.size = size
+        self.material = material
 
 
-mattr_1 = NestedDoll()
-mattr_2 = NestedDoll()
-mattr_3 = NestedDoll()
+# Создание экземпляра класса
+doll1 = NestedDoll("Красный", 10, "Дерево")
+doll2 = NestedDoll("Синий", 20, "Пластик")
 
-print(mattr_1.color)
-print(mattr_2.color)
-print(mattr_3.color)
-
-mattr_1.color = "green"
-
-print(mattr_1.color)
-print(mattr_2.color)
-print(mattr_3.color)
+print(doll1.color, doll1.size, doll1.material)
+print(doll2.color, doll2.size, doll2.material)
