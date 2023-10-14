@@ -47,12 +47,6 @@ stage = {
 
 
 """
-import json
-from pprint import pprint
-
-import requests as requests
-
-from marvel import full_dict
 
 # stage = {
 #     1: "Первая фаза",
@@ -96,7 +90,6 @@ from marvel import full_dict
 # b - binary (бинарный режим) - Для работы с изображениями, видео, аудио
 
 # Работа с контекстным менеджером (with)
-from time import time as t
 
 # message = """
 # Привет, мир!\n
@@ -189,12 +182,12 @@ data = [
     ["Сыр", 3, "Молочные продукты"]
 ]
 # newline="" - убирает пустые строки
-with open("new_products.csv", "w", newline="", encoding="windows-1251") as file:
+with open("../new_products.csv", "w", newline="", encoding="windows-1251") as file:
     writer = csv.writer(file)  # создаем объект writer
     writer.writerows(data)  # записываем данные в файл
 
 # Делаем то же самое, но с разделителем;
-with open("new_products.csv", "w", newline="", encoding="windows-1251") as file:
+with open("../new_products.csv", "w", newline="", encoding="windows-1251") as file:
     writer = csv.writer(file, delimiter=";")  # создаем объект writer
     writer.writerows(data)  # записываем данные в файл
 #

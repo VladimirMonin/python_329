@@ -268,4 +268,4 @@ def write_json(data, file_name, encoding='utf-8', ensure_ascii=False, indent=4):
 
 
 data = {'name': 'Alex', 'age': 30}
-write_json(data, 'data.json')
+write_json(data, '../data.json')

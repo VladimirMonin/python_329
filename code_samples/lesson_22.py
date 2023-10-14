@@ -1,7 +1,7 @@
 # Lesson 22 - 01 октября 2023 года
 import time
-from typing import Dict, Any, Union, Callable, List
-from cities import cities
+from typing import Any, Callable, List
+from data.cities import cities
 
 
 # TODO - Декоратор может ли принимать несколько функций?

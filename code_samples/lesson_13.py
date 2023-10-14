@@ -1,7 +1,5 @@
 # Lesson 13 (25-26)
 # Повторяем словари
-from pprint import pprint
-from marvel import full_dict
 
 # Словарь. Dictionary. dict
 # Словарь - это структура данных, которая хранит данные в виде пары ключ-значение

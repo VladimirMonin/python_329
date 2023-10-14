@@ -442,7 +442,7 @@ print(films_db)
 #
 
 # TODO HW
-from marvel import full_dict
+from data.marvel import full_dict
 
 # Фильтруем и сортируем фильмы
 result = sorted(filter(lambda film: film['title'].startswith('Ч'), full_dict.values()), key=lambda film: film['year'])

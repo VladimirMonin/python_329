@@ -1,6 +1,6 @@
 # "Логирование в игре города" через логирование в файл txt и в консоль
 
-LOG_FILE = 'game_log.txt'
+LOG_FILE = '../game_log.txt'
 MSG_COMPUTER_WIN = 'Компьютер победил, назвав город'
 MSG_HUMAN_WIN = 'Пользователь победил, назвав город'
 
@@ -86,8 +86,6 @@ def print_users(**kwargs):
 
 
 # print_users(**kwargs)
-
-from marvel import small_dict
 
 
 #

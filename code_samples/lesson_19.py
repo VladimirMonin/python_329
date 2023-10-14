@@ -1,6 +1,6 @@
 from pprint import pprint
 
-from marvel import full_dict
+from data.marvel import full_dict
 
 # Lesson 20
 # Повторение функций. Области видимости переменных
@@ -203,9 +203,8 @@ pprint(dict_films)
 
 
 # 22 lesson
-from pprint import pprint
 
-from marvel import full_dict
+from data.marvel import full_dict
 
 # Повторение материала
 

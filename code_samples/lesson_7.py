@@ -2,7 +2,7 @@
 # from random import randint, choice
 # # import selenium
 # import marvel
-from marvel import simple_set, small_dict, full_dict
+from data.marvel import full_dict
 
 
 # print(marvel.simple_set)

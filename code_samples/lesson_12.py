@@ -22,11 +22,7 @@
 - Нейминг переменных (хорошие читаемые имена, подходящие по смыслу)
 - PEP-8
 """
-import json
 from typing import Any
-
-from cities import cities
-from pprint import pprint
 
 
 # sities_set = set()
