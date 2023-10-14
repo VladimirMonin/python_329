@@ -4,6 +4,10 @@
 1. Разбор ДЗ №20 - Декоратор с параметрами
 2. Обозначение проблемы - зачем нужно ООП?
 3. Синтаксис именования классов
+4. Создание класса
+5. Создание экземпляра класса
+6. Посмотрели ID экземпляра класса и Тип экземпляра класса
+7. Создали первое поле класса
 """
 
 """
@@ -19,21 +23,21 @@
 
 
 class NestedDoll:
+    # Поля класса
+    color = "red"
     pass
 
-# Создаем объекты класса NestedDoll
+
 mattr_1 = NestedDoll()
 mattr_2 = NestedDoll()
 mattr_3 = NestedDoll()
 
-# type - это тип объекта
-# Мы создали 3 объекта, но у них одинаковый тип
-print(type(mattr_1))
-print(type(mattr_2))
-print(type(mattr_3))
+print(mattr_1.color)
+print(mattr_2.color)
+print(mattr_3.color)
 
-# id - это уникальный идентификатор объекта в памяти
-# Мы создали 3 объекта, но у них разные id
-print(id(mattr_1))
-print(id(mattr_2))
-print(id(mattr_3))
+mattr_1.color = "green"
+
+print(mattr_1.color)
+print(mattr_2.color)
+print(mattr_3.color)
