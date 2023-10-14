@@ -12,6 +12,7 @@
 9. Init - это специальный метод, который вызывается при создании экземпляра класса
 10. Создали первый метод класса
 11. Добавили док-строку к методу и классу
+12. Посмотрели на дандер-метод __str__, который вызывается при принте экземпляра класса
 """
 
 
@@ -28,6 +29,9 @@ class NestedDoll:
         self.size = size
         self.material = material
 
+    def __str__(self):
+        return f"Матрешка цвета {self.color} размером {self.size} материал: {self.material}"
+
     def get_color(self) -> str:
         """
         Метод, который возвращает цвет куклы
@@ -40,8 +44,10 @@ class NestedDoll:
 doll1: NestedDoll = NestedDoll("Красный", 10, "Дерево")
 doll2: NestedDoll = NestedDoll("Зеленый", 15, "Пластик")
 
-print(doll1.get_color())
+print(doll1.color)
 print(doll2.get_color())
+
+print(doll1)
 
 
 
