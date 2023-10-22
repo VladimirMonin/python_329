@@ -18,35 +18,62 @@ Lesson 27
 # __eq__ - для сравнения на равенство
 # __lt__ - для сравнения на меньше
 
+
+"""
+Практика!
+Создайте класс Гиря.
+У Гири 2 аттрибута - название и вес
+Опишите методы сравнения с использованием @total_ordering
+Создайте 2 экземпляра класса Гиря
+Проведите сравнение и получите правильный результат
+"""
 from functools import total_ordering
 
 
 @total_ordering
-class Pizza:
-    def __init__(self, size):
-        self.size = size
+class Kettlebell:
+    def __init__(self, name, weight):
+        self.name = name
+        self.weight = weight
 
     def __eq__(self, other):
-        return self.size == other.size
+        return self.weight == other.weight and self.name == other.name
 
     def __lt__(self, other):
-        return self.size < other.size
+        return self.weight < other.weight
 
     def __str__(self):
-        return f'Пицца размером {self.size}'
+        return f'Гиря {self.name} весом {self.weight} кг'
 
     def __repr__(self):
-        return f'Pizza({self.size})'
+        return f'Kettlebell({self.name}, {self.weight})'
+
+    # Свой метод сравнения гирь только по имени
+    def is_equal_name(self, other):
+        return self.name == other.name
 
 
-pizza_1 = Pizza(30)
-pizza_2 = Pizza(35)
+ket1 = Kettlebell('Кеттл 1', 16)
+ket2 = Kettlebell('Кеттл 2', 24)
 
-print(pizza_1)
-print(pizza_2)
+print(ket1)
+print(ket2)
 
-print(pizza_1 == pizza_2)
-print(pizza_1 < pizza_2)
-print(pizza_1 > pizza_2)
-print(pizza_1 <= pizza_2)
-print(pizza_1 >= pizza_2)
+print(ket1 == ket2)
+print(ket1 != ket2)
+print(ket1 > ket2)
+print(ket1 < ket2)
+print(ket1 >= ket2)
+print(ket1 <= ket2)
+
+# Используем свой метод
+print(ket1.is_equal_name(ket2))
+
+# Делаем сортировку списка гирь
+kettlebells = [Kettlebell('Кеттл 1', 16), Kettlebell('Кеттл 2', 24), Kettlebell('Кеттл 3', 12)]
+print(kettlebells)
+kettlebells.sort()
+print(kettlebells)
+
+# Сортировка через key - сортировка по имени передачи is_equal_name
+kettlebells.sort(key=lambda x: x.is_equal_name(ket1))
