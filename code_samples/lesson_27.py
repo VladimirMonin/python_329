@@ -12,67 +12,110 @@ Lesson 27
 """
 
 
-# Функции str и repr в Python
-# Проверяем на встроенных типах данных (У них тоже есть методы str и repr)
-# print(str(1))
-# print(repr(1))
-#
-# print(str('1'))
-# print(repr('1'))
+# Сравнение объектов в Python
+# __eq__()  == . Метод, который сравнивает два объекта и возвращает True, если они равны, и False, если они не равны.
+# __ne__()  != . Метод, который сравнивает два объекта и возвращает True, если они не равны, и False, если они равны.
+# __lt__()  < . Метод, который сравнивает два объекта и возвращает True, если первый объект меньше второго, и False, если первый объект больше второго.
+# __gt__()  > . Метод, который сравнивает два объекта и возвращает True, если первый объект больше второго, и False, если первый объект меньше второго.
+# __le__()  <= . Метод, который сравнивает два объекта и возвращает True, если первый объект меньше или равен второму, и False, если первый объект больше второго.
+# __ge__()  >= . Метод, который сравнивает два объекта и возвращает True, если первый объект больше или равен второму, и False, если первый объект меньше второго.
 
 
-class Person:
-    def __init__(self, name, age):
+class Pizza:
+    def __init__(self, name: str, weight: float, price: float):
         self.name = name
-        self.age = age
+        self.weight = weight
+        self.price = price
+
+    def __eq__(self, other):
+        """
+        Метод, который сравнивает два объекта и возвращает True, если они равны, и False, если они не равны.
+        :param other:
+        :return:
+        """
+        if not isinstance(other, Pizza): # Проверка на принадлежность к классу
+            raise ValueError('Сравнивать можно только объекты класса Pizza')
+        # Задаем условия сравнения (какое выражение должно вернуть True чтобы объекты были равны)
+        return self.name == other.name and self.weight == other.weight and self.price == other.price
+
+    def __gt__(self, other):
+        """
+        Метод, который сравнивает два объекта и возвращает True, если первый объект больше второго, и False, если первый объект меньше второго.
+        :param other:
+        :return:
+        """
+        if not isinstance(other, Pizza):
+            raise ValueError('Сравнивать можно только объекты класса Pizza')
+        return self.price > other.price
+
+    def __lt__(self, other):
+        """
+        Метод, который сравнивает два объекта и возвращает True, если первый объект меньше второго, и False, если первый объект больше второго.
+        :param other:
+        :return:
+        """
+        if not isinstance(other, Pizza):
+            raise ValueError('Сравнивать можно только объекты класса Pizza')
+        return self.price < other.price
+
+    def __ge__(self, other):
+        """
+        Метод, который сравнивает два объекта и возвращает True, если первый объект больше или равен второму, и False, если первый объект меньше второго.
+        :param other:
+        :return:
+        """
+        if not isinstance(other, Pizza):
+            raise ValueError('Сравнивать можно только объекты класса Pizza')
+        return self.price >= other.price
+
+    def __le__(self, other):
+        """
+        Метод, который сравнивает два объекта и возвращает True, если первый объект меньше или равен второму, и False, если первый объект больше второго.
+        :param other:
+        :return:
+        """
+        if not isinstance(other, Pizza):
+            raise ValueError('Сравнивать можно только объекты класса Pizza')
+        return self.price <= other.price
+
+    def __ne__(self, other):
+        """
+        Метод, который сравнивает два объекта и возвращает True, если они не равны, и False, если они равны.
+        :param other:
+        :return:
+        """
+        if not isinstance(other, Pizza):
+            raise ValueError('Сравнивать можно только объекты класса Pizza')
+        return self.price != other.price
 
     def __str__(self):
-        return f"Класс Person. Имя: {self.name}, {self.age} лет"
+        """
+        Метод, который возвращает строковое представление объекта
+        :return:
+        """
+        return f'Название: {self.name}, вес: {self.weight}, цена: {self.price}'
 
     def __repr__(self):
-        return f"Person('{self.name}', {self.age})"
+        """
+        Метод, который возвращает строковое представление объекта
+        :return:
+        """
+        return f'Название: {self.name}, вес: {self.weight}, цена: {self.price}'
 
 
-# Неформальное представление:
-jane = Person("Jane", 30)
-
-print(jane)  # Jane, 30 years old
-print(str(jane))  # Jane, 30 years old
-
-# Формальное представление:
-print(repr(jane))  # Person('Jane', 30)
-
-# Получили строку, которая содержит код, который можно использовать для создания объекта.
-repr_str = repr(jane)
-
-# eval - функция, которая принимает строку и выполняет ее как код Python
-# Обратное преобразование repr в объект:
-recreated_jane = eval(repr_str)
-print(type(recreated_jane))
-
-## **Запись объектов в файл и их восстановление из файла с использованием `__repr__()`**:
-
-import json
 
 
-class Person:
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
-
-    def __repr__(self):
-        return json.dumps({"name": self.name, "age": self.age})
 
 
-# Сериализация и запись объекта в файл
-person = Person("Alice", 30)
-with open("person.json", "w") as file:
-    file.write(repr(person))
+# Проверка работы. Создаем 2 одинаковых пиццы и проверяем на равенство
 
-# Десериализация и восстановление объекта из файла
-with open("person.json", "r") as file:
-    person_json = file.read()
-    person = Person.from_json(person_json)
+pizza_1 = Pizza('Маргарита', 0.75, 650)
+pizza_2 = Pizza('Маргарита', 0.5, 500)
 
-print(person.name)  # Вывод: 'Alice'
-print(person.age)  # Вывод: 30
+print(pizza_1 < pizza_2)  # True
+pizza_list = [pizza_2, pizza_1]
+
+print(pizza_list)
+# Сортируем от дорогой к дешевой
+pizza_list.sort(reverse=True)
+print(pizza_list)
