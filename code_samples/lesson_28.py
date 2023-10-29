@@ -7,6 +7,7 @@ Lesson 28
 - Концепция наследования в ООП
 - Наследуются и поля и методы
 - Расширение функционала родительского класса в дочернем классе
+- Расширение атрибутов родительского класса в дочернем классе
 """
 
 
@@ -24,19 +25,18 @@ class Transport:
 
 
 class Bike(Transport):
-    # Новый метод
-    def make_jump(self):
-        print(f'{self.model} прыгает')
+    def __init__(self, model, color, max_speed, wheels):
+        super().__init__(model, color, max_speed)
+        self.wheels = wheels
+
+    def move(self):
+        print(f'{self.model} едет со скоростью {self.max_speed} км/ч на {self.wheels} колесах')
+
+    def stop(self):
+        print(f'{self.model} остановился')
 
 
-# Создаем экземпляр класса Bike и Transport вызываем методы
-
-transport: Transport = Transport('BMW', 'red', 200)
-transport.move()
-transport.stop()
-
-bike: Bike = Bike('BMX', 'black', 40)
-bike.move()
-bike.make_jump()
-
-
+# Создаем экземпляр класса Transport и экземпляр класса Bike
+transport = Transport('Tesla', 'red', 200)
+bike = Bike('BMX', 'black', 20, 2)
+a = 'чебурек'
