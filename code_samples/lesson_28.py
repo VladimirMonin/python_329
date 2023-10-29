@@ -5,27 +5,38 @@ Lesson 28
 Тема: Наследование в ООП
 
 - Концепция наследования в ООП
+- Наследуются и поля и методы
+- Расширение функционала родительского класса в дочернем классе
 """
 
 
-# Наследуется все, включая конструктор __init__ и все методы
+class Transport:
+    def __init__(self, model, color, max_speed):
+        self.model = model
+        self.color = color
+        self.max_speed = max_speed
 
-class Parent:  # Базовый класс
-    def __init__(self, name):
-        self.name = name
-        print('Parent __init__')
+    def move(self):
+        print(f'{self.model} едет со скоростью {self.max_speed} км/ч')
 
-    def get_name(self):
-        return self.name
-
-
-class Child(Parent):  # Производный класс наследует от базового класса Parent
-    pass
+    def stop(self):
+        print(f'{self.model} остановился')
 
 
-parent: Parent = Parent('John')
-child: Child = Child('Smith')
+class Bike(Transport):
+    # Новый метод
+    def make_jump(self):
+        print(f'{self.model} прыгает')
 
-# Методы родителя доступны и в дочернем классе
-print(parent.get_name())
-print(child.get_name())
+
+# Создаем экземпляр класса Bike и Transport вызываем методы
+
+transport: Transport = Transport('BMW', 'red', 200)
+transport.move()
+transport.stop()
+
+bike: Bike = Bike('BMX', 'black', 40)
+bike.move()
+bike.make_jump()
+
+
