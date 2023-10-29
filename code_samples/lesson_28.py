@@ -8,34 +8,40 @@ Lesson 28
 - Наследуются и поля и методы
 - Расширение функционала родительского класса в дочернем классе
 - Расширение атрибутов родительского класса в дочернем классе
-- 10 МИНУТ ПЕРЕРЫВ :)
 - Как пишется документация к классу и методу (pep 257)
 (https://peps.python.org/pep-0008/#documentation-string)
 - Как посмотреть документацию к классу __doc__
 - Как посмотреть аттрибуты класса __dict__ и __dir__
+- Переопределение родительских полей и методов
+- Многоуровневое наследование
 """
 
 
-# Переопределение родительских полей и методов
+# Многоуровневое наследование
 
-class Person:
-    def __init__(self, name, surname, age, work):
-        self.name = name
-        self.surname = surname
-        self.__age = age
-        self.work = work
+class A:
+    def __init__(self):
+        print('Вызов __init__ класса A')
 
-    def get_age(self):
-        return self.__age
-
-    def __str__(self):
-        return f'{self.name} {self.surname} {self.__age}'
+    def a_method(self):
+        print(f'Вызов метода a_method класса {self.__class__.__name__}')
 
 
-class Employee(Person):
-    def __init__(self, name, surname, age, work, salary):
-        super().__init__(name, surname, age, work)
-        self.salary = salary
+class B(A):
+    def __init__(self):
+        print(f'Вызов __init__ класса {self.__class__.__name__}')
+        super().__init__()
 
-    def __str__(self):
-        return f'{self.name} {self.surname} {self.__age} {self.salary}'
+    def b_method(self):
+        print(f'Вызов метода b_method класса {self.__class__.__name__}')
+
+
+class C(B):
+    def __init__(self):
+        print(f'Вызов __init__  класса {self.__class__.__name__}')
+        super().__init__()
+
+
+c = C()
+c.b_method()
+c.a_method()
