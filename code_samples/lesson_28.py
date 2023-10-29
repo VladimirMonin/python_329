@@ -16,85 +16,26 @@ Lesson 28
 """
 
 
-class Transport:
-    """
-    Класс Transport. Родительский класс для всех транспортных средств
-    Имеет методы:
-    - move - движение
-    - stop - остановка
+# Переопределение родительских полей и методов
 
-    Имеет аттрибуты:
-    - model - модель
-    - color - цвет
-    - max_speed - максимальная скорость
+class Person:
+    def __init__(self, name, surname, age, work):
+        self.name = name
+        self.surname = surname
+        self.__age = age
+        self.work = work
 
-    """
-    def __init__(self, model: str, color: str, max_speed: int):
-        self.model = model
-        self.color = color
-        self.max_speed = max_speed
+    def get_age(self):
+        return self.__age
 
-    def move(self):
-        """
-        Метод движение
-        :return: None
-        """
-        print(f'{self.model} едет со скоростью {self.max_speed} км/ч')
-
-    def stop(self):
-        """
-        Метод остановки
-        :return: None
-        """
-        print(f'{self.model} остановился')
+    def __str__(self):
+        return f'{self.name} {self.surname} {self.__age}'
 
 
-class Bike(Transport):
-    """
-    Класс Bike. Дочерний класс для класса Transport
-    Имеет методы:
-    - move - движение
-    - stop - остановка
+class Employee(Person):
+    def __init__(self, name, surname, age, work, salary):
+        super().__init__(name, surname, age, work)
+        self.salary = salary
 
-    Имеет аттрибуты:
-    - model - модель
-    - color - цвет
-    - max_speed - максимальная скорость
-    - wheels - колеса
-
-    """
-    def __init__(self,  model: str, color: str,
-                 max_speed: int, wheels: int):
-
-        super().__init__(model, color, max_speed)
-        self.wheels = wheels
-
-    def move(self):
-        """
-        Метод движение
-        :return: None
-        """
-        print(f'{self.model} едет со скоростью '
-              f'{self.max_speed} км/ч на {self.wheels} колесах')
-
-    def stop(self):
-        """
-        Метод остановки
-        :return: None
-        """
-        print(f'{self.model} остановился')
-
-
-# Создаем экземпляр класса Transport и экземпляр класса Bike
-transport = Transport('Tesla', 'red', 200)
-bike = Bike('BMX', 'black', 20, 2)
-a = 'чебурек'
-
-# Вызываем методы отображающие документацию
-print(transport.move.__doc__)
-
-# Вызываем методы отображающие аттрибуты класса
-print(transport.__dict__)
-
-# Вызываем методы отображающие аттрибуты класса
-print(transport.__dir__())
+    def __str__(self):
+        return f'{self.name} {self.surname} {self.__age} {self.salary}'
