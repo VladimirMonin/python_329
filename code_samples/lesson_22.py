@@ -21,6 +21,8 @@ def some_func() -> None:
 
 
 f: Callable = print_decorator(some_func)
+
+
 # f()
 
 
@@ -99,12 +101,52 @@ def some_func5(group: str, theme: str) -> None:
 
 # Декоратор, который будет засекать время выполнения функции
 
+import time
+from typing import Callable, Any
+
+import time
+from typing import Callable, Any
+
+import time
+from typing import Callable, Any
+
+"""
+time.perf_counter() — это функция из модуля time в стандартной библиотеке Python, которая предоставляет доступ к 
+монотонному счётчику времени с наивысшим доступным разрешением для измерения коротких промежутков времени. 
+Вот несколько ключевых моментов об time.perf_counter():
+
+Монотонность: Этот счетчик является монотонным, что означает, что его значения никогда не уменьшаются. 
+Это важно для измерения временных интервалов, так как это гарантирует, что разница между концом и началом 
+интервала всегда будет положительной или нулевой, даже если системные часы изменяются.
+
+Высокое разрешение: Функция предоставляет время с высокой точностью, что делает ее идеальной для замера 
+времени выполнения операций, особенно когда требуется измерить очень короткие промежутки времени.
+
+Независимость от системного времени: Значение, возвращаемое time.perf_counter(), не зависит от системного 
+времени и не подвержено изменениям из-за корректировки часов или перехода на летнее/зимнее время.
+
+Использование: Эта функция часто используется для бенчмаркинга и профилирования кода, поскольку 
+она предоставляет более точные измерения времени, чем time.time() или time.clock().
+
+Платформонезависимость: time.perf_counter() работает на различных платформах, 
+предоставляя стабильный интерфейс для замера времени.
+
+Возвращаемое значение: Функция возвращает время в секундах как число с 
+плавающей точкой. С момента запуска Python (или от момента первого вызова time.perf_counter(), 
+точное определение зависит от реализации) до момента вызова функции.
+"""
+
+
 def time_decorator(func: Callable) -> Callable:
-    def wrapper(*args: Any, **kwargs: Any) -> None:
-        start_time = time.time()
-        func(*args, **kwargs)
-        finish_time = time.time()
-        print(f"Программа выполнялась {finish_time - start_time} секунд")
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        # pref_counter - точное время
+        start_time = time.perf_counter()
+        result = func(*args, **kwargs)
+        finish_time = time.perf_counter()
+        elapsed_time = finish_time - start_time
+        # Используем format для вывода времени в обычном десятичном формате
+        print(f"Программа выполнялась {format(elapsed_time, '.10f')} секунд")
+        return result
 
     return wrapper
 
@@ -118,14 +160,14 @@ def get_cities_by_population(population: int) -> List[str]:
     for city in cities:
         if city["population"] >= population:
             result_list.append(city["name"])
-    time.sleep(1)
+    # time.sleep(1)
     return result_list
 
 
 # Аналог на list comprehension
 @time_decorator
 def get_cities_by_population2(population: int) -> List[str]:
-    time.sleep(1)
+    # time.sleep(1)
     return [city["name"] for city in cities if city["population"] >= population]
 
 
@@ -133,7 +175,7 @@ def get_cities_by_population2(population: int) -> List[str]:
 
 @time_decorator
 def get_cities_by_population3(population: int) -> List[str]:
-    time.sleep(1)
+    #     time.sleep(1)
     return list(map(lambda city: city["name"], filter(lambda city: city["population"] >= population, cities)))
 
 
