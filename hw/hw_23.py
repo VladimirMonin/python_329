@@ -143,6 +143,7 @@ class PromoCodeMixin:
     """
     Миксин для применения промо-кода
     """
+    @staticmethod
     def apply_promo_code(self, promo_code: str, cost: float, promo_codes: List[PromoCodeData]) -> float:
         for code in promo_codes:
             if code.code == promo_code:
@@ -169,7 +170,7 @@ def main():
     costs = []
     for service in services:
         cost = service.calculate_cost_for_service(product)
-        cost_with_promo = PromoCodeMixin().apply_promo_code("DISCOUNT10", cost, promo_codes)
+        cost_with_promo = PromoCodeMixin.apply_promo_code(service, "promo", cost, promo_codes)
         costs.append((service, cost_with_promo))
 
     # Сортируем по цене и по скорости доставки
