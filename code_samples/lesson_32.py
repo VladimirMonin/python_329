@@ -6,37 +6,65 @@ Lesson 32
 - Разбор ДЗ службы доставки
 - Потребность в абстрактных классах
 """
+from abc import ABC, abstractmethod
 
 """
-У нас может быть огромное количество разных служб доставки,
-но все они должны иметь одинаковый интерфейс.
+Для описания абстрактных классов в питоне используется модуль abc
+Абстрактный класс наследуется от ABC
 
-К примеру метод посчитать стоимость доставки, метод посчитать время доставки
-и т.д.
+from abc import ABC
 
-В таком случае мы можем создать абстрактный класс Delivery, который будет
-содержать в себе все необходимые методы, а все остальные классы будут его
-наследовать.
-
-Использование абстрактных классов позволяет нам создавать общий интерфейс
-
-Использование одинаковых методов у разных классов называется полиморфизмом
+#     Абстрактный метод - это метод, который должен быть реализован в дочерних классах
+#     Абстрактные методы объявляются с помощью декоратора @abstractmethod
+#     Абстрактные методы не имеют реализации
+#     Абстрактные методы не могут быть вызваны
+#     Абстрактные методы могут быть вызваны только в дочерних классах
 """
 
 
-class Delivery:
+class Delivery(ABC):
     """
-    Базовый класс для доставки
+    Абстрактный класс для доставки
     """
 
-    def __init__(self, delivery_speed: int):
-        self.delivery_speed = delivery_speed
+    def __init__(self, address):
+        """
+        Конструктор класса
+        :param address: Адрес доставки
+        """
+        self.address = address
+
+    def deliver(self):
+        """
+        Метод доставки
+        :return: None
+        """
+        print(f'Доставка по адресу {self.address}')
+
+    @abstractmethod
+    def calculate_cost(self, start_cost: float) -> float:
+        """
+        Метод для расчета стоимости доставки
+        :param start_cost:
+        :param product: Объект товара
+        :return: Стоимость доставки
+        """
+        pass
 
 
 class DeliveryServiceA(Delivery):
     """
     Класс для доставки сервисом A
     """
+
+    def calculate_cost(self, start_cost: float) -> float:
+        """
+        Метод для расчета стоимости доставки
+        :param start_cost:
+
+        :return: Стоимость доставки
+        """
+        return start_cost * 0.1
 
 
 class DeliveryServiceB(Delivery):
@@ -51,3 +79,8 @@ class DeliveryServiceC(Delivery):
     Класс для доставки сервисом C. У него есть
     международная доставка, поэтому мы используем миксин InternationalMixin
     """
+
+
+dev = DeliveryServiceA('Москва')  # Будет работать нормально, у него есть реализация абстрактного метода
+dev.deliver()
+# dev = DeliveryServiceB('Москва') # TypeError: Can't instantiate abstract class DeliveryServiceB with abstract method calculate_cost
