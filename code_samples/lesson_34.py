@@ -31,7 +31,7 @@ def logger_decorator(func):
             # Определяем имя функции
             function_name = func.__name__
             # Определяем имя класса
-            class_name = args[0].__class__.__name__ # args[0] - это self
+            class_name = args[0].__class__.__name__  # args[0] - это self
             # Формируем лог строку
             log_string = f'[{current_datetime}] В классе {class_name} в методе {function_name} произошла ошибка: {ex}\n'
             # Записываем в файл
@@ -40,35 +40,65 @@ def logger_decorator(func):
 
             return log_string
 
-
     return wrapper
 
 
-# Класс для декорирования (Math) с методом деления а на б
+# Такой же декоратор, но реализованный через класс с несколькими методами:
+# Реализуем в РАЗНЫХ методах следующее:
+# - определение даты и времени
+# - определение имени функции
+# - определение имени класса
+# - формирование лог строки
+# - запись в файл
+
+class LoggerDecorator:
+    def __init__(self, func):
+        self.func = func
+
+    # Метод определяет дату и время
+    @staticmethod
+    def get_current_datetime():
+        return datetime.now().strftime('%d.%m.%Y %H:%M:%S')
+
+    # Метод определяет имя функции
+    def get_function_name(self):
+        return self.func.__name__
+
+    # Метод определяет имя класса
+    @staticmethod
+    def get_class_name(instance):
+        return instance.__class__.__name__
+
+    # Метод формирует лог строку
+    def get_log_string(self, instance, ex):
+        return (f'[{self.get_current_datetime()}] '
+                f'В классе {self.get_class_name(instance)} в '
+                f'методе {self.get_function_name()} произошла ошибка: {ex}\n')
+
+    # Метод записывает в файл
+    def write_to_file(self, instance, ex):
+        with open('logs.txt', 'a', encoding='utf-8') as file:
+            file.write(self.get_log_string(instance, ex))
+
+    def __call__(self, *args, **kwargs):
+        try:
+            args = list(args)
+            kwargs = dict(kwargs)
+
+            result = self.func(*args, **kwargs)
+            return result
+        except Exception as ex:
+            self.write_to_file(args[0], ex)
+            return self.get_log_string(args[0], ex)
+
 
 class Math:
-    def __init__(self, a, b):
-        self.a = a
-        self.b = b
 
-    @logger_decorator
-    def division(self):
-        return self.a / self.b
+    # @staticmethod
+    @LoggerDecorator
+    def devision(self, a, b):
+        return a / b
 
 
-# Создаем объект класса Math
-math = Math(10, 0)
-
-# Вызываем метод division
-print(math.division())
-
-# Пробуем декоратор на функции а не на методе класса. Функция деления
-
-
-@logger_decorator
-def get_division_func(a, b):
-    return a / b
-
-
-# Вызываем функцию
-print(get_division_func(10, 0))
+m = Math()
+m.devision(1, 1)
