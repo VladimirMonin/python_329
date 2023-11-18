@@ -17,27 +17,51 @@ Lesson 34
 import time
 from datetime import datetime
 
+from datetime import datetime
 
-# Декоратор класс который будет декорировать методы и функции и выводить дату и время выполнения
 
-class TimeIt:
-    def __init__(self, fn):
-        self.fn = fn
+class LoggerDecorator:
+
+    def __init__(self, func):
+        self.func = func
+
+    @staticmethod
+    def get_current_datetime():
+        return datetime.now().strftime('%d.%m.%Y %H:%M:%S')
+
+    def get_name(self):
+        return self.func.__qualname__  # __qualname__ - полное имя класса и метода
+
+    def get_log_string(self, ex):
+        return (f'[{self.get_current_datetime()}] '
+                f'В {self.get_name()} произошла ошибка: {ex}\n')
+
+    def write_to_file(self, ex):
+        with open('logs.txt', 'a', encoding='utf-8') as file:
+            file.write(self.get_log_string(ex))
 
     def __call__(self, *args, **kwargs):
-        # pref_counter - точное время
-        start_time = time.perf_counter()
-        result = self.fn(*args, **kwargs)
-        finish_time = time.perf_counter()
-        print(f"Время выполнения функции {self.fn.__name__} заняло {finish_time - start_time:.10f} секунд")
-        return result
+        try:
+            # Удаление из аргументов self - сделает это декоратор функции
+            return self.func(self, *args, **kwargs)
+        except Exception as ex:
+            self.write_to_file(ex)
+            # raise  # Проброс исключения, если нужен raise
 
-# Функция деления
-@TimeIt
-def div(a, b):
+
+class Math:
+    @LoggerDecorator
+    def division(self, a, b):
+        return a / b
+
+
+m = Math()
+m.division(1, 0)  # Приведет к ZeroDivisionError и будет залогировано
+
+
+@LoggerDecorator
+def division(a, b):
     return a / b
 
-# Test
-print(div(10, 5))
-print(div(10, 2))
-print(div(10, 1))
+
+division(1, 0)  # Приведет к ZeroDivisionError и будет залогировано
