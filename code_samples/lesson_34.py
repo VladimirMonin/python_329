@@ -12,23 +12,23 @@ from typing import Callable
 
 def print_decorator1(func: Callable) -> Callable:
     def wrapper(*args, **kwargs):
-        print("ДО. Print_decorator1")
-        func(*args, **kwargs)
-        print("ПОСЛЕ Print_decorator1")
+        if False:
+            return func(*args, **kwargs)
 
     return wrapper
 
 
 def print_decorator2(func: Callable) -> Callable:
     def wrapper(*args, **kwargs):
-        print("ДО. Print_decorator2")
-        func(*args, **kwargs)
-        print("ПОСЛЕ Print_decorator2")
+        return func(*args, **kwargs)
 
     return wrapper
+
 
 @print_decorator2
 @print_decorator1
 def some_print():
-    print("Hello world")
+    return ("Hello world")
 
+
+print(some_print())
