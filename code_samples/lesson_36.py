@@ -7,23 +7,11 @@ Lesson 34
 Метаклассы
 """
 
+# TODO
+"""
+Создайте метакласс, который будет добавлять в классы атрибут class_id
+со значением, равным имени класса в нижнем регистре.
 
-class МetaWomen(type):
-    #
-    def create_local_attrs(self, *args, **kwargs):
-        for key, value in self.class_attrs.items():
-            setattr(self, key, value)
-
-    def __init__(cls, name, bases, attrs):
-        cls.class_attrs = attrs
-        cls.__init__ = МetaWomen.create_local_attrs
-
-
-class Women(metaclass=МetaWomen):
-    title = 'заголовок'
-    content = 'контент'
-    photo = 'путь к фото'
-
-
-w = Women()
-print(w.__dict__)
+Создайте классы A и B с этим метаклассом и проверьте, что у них есть
+атрибут class_id.
+"""
