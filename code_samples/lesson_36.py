@@ -4,37 +4,40 @@ Lesson 34
 
 Класс внутри класса. Вложенные классы.
 Похоже на представление базы данных в Django
-"""
-
-"""
-В Django вложенные классы часто используются для определения метаданных 
-моделей. Например, класс `Meta` внутри модели Django используется для 
-задания таких параметров, как порядок сортировки 
-объектов модели (`ordering`), названия таблицы в базе данных
- (`db_table`) и прочие конфигурационные настройки. 
- 
-Это стандартная практика в Django и является исключением из правила,
-так как `Meta` служит для конфигурации внешнего класса.
+Метаклассы
 """
 
 
-class Outer:
-    def __init__(self, data):
-        self.data = data
-        self.inner = self.Inner(self)
-
-    class Inner:
-        def __init__(self, outer_instance):
-            self.outer_data = outer_instance.data
-
-        def get_outer_data(self):
-            return self.outer_data
+def create_class_point(name, base, attrs):
+    # name - имя класса
+    # base - базовый класс (object)
+    # attrs - атрибуты класса
+    attrs.update({'MAX_COORD': 100, 'MIN_COORD': 0})
+    return type(name, base, attrs)
 
 
-# Создаем экземпляр вложенного класса
-outer = Outer('data')
-inner = outer.inner
+class Point(metaclass=create_class_point):
+    def get_coords(self):
+        return (0, 0)
 
-# Проверяем, что вложенный класс имеет доступ к данным внешнего класса
-print(inner.get_outer_data())
 
+pt = Point()
+print(pt.MAX_COORD)
+print(pt.get_coords())
+
+
+class Meta(type):
+    def __init__(cls, name, base, attrs):
+        super().__init__(name, base, attrs)
+        cls.MAX_COORD = 100
+        cls.MIN_COORD = 0
+
+
+class Point(metaclass=Meta):
+    def get_coords(self):
+        return 0, 0
+
+
+pt = Point()
+print(pt.MAX_COORD)
+print(pt.get_coords())
