@@ -18,27 +18,23 @@ Lesson 34
 """
 
 
-class Women:
-    title = 'объект класса для поля title'
-    photo = 'объект класса для поля photo'
-    ordering = 'объект класса для поля ordering'
+class Outer:
+    def __init__(self, data):
+        self.data = data
+        self.inner = self.Inner(self)
 
-    def __init__(self, user, psw):
-        self._user = user
-        self._psw = psw
-        self.meta = self.Meta(user + '@' + psw)
+    class Inner:
+        def __init__(self, outer_instance):
+            self.outer_data = outer_instance.data
 
-    class Meta:
-        ordering = ['id']
-
-        def __init__(self, access):
-            self._access = access
+        def get_outer_data(self):
+            return self.outer_data
 
 
-w = Women('root', '12345')
+# Создаем экземпляр вложенного класса
+outer = Outer('data')
+inner = outer.inner
 
-# __dict__ - словарь атрибутов объекта
+# Проверяем, что вложенный класс имеет доступ к данным внешнего класса
+print(inner.get_outer_data())
 
-
-print(w.__dict__)
-print(w.meta.__dict__)
