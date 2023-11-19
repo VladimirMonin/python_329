@@ -8,37 +8,22 @@ Lesson 34
 """
 
 
-class Meta(type):
-    def __init__(cls, name, base, attrs):
-        super().__init__(name, base, attrs)
-        cls.MAX_COORD = 100
-        cls.MIN_COORD = 0
+class МetaWomen(type):
+    #
+    def create_local_attrs(self, *args, **kwargs):
+        for key, value in self.class_attrs.items():
+            setattr(self, key, value)
+
+    def __init__(cls, name, bases, attrs):
+        cls.class_attrs = attrs
+        cls.__init__ = МetaWomen.create_local_attrs
 
 
-# Аналог метакласса Meta - только с изменением на этапе __new__ а не __init__
-class Meta2(type):
-    def __new__(cls, name, base, attrs):
-        attrs.update({'MAX_COORD': 100, 'MIN_COORD': 0})
-        # Изначальный вариант с type - тоже работает
-        # return type.__new__(cls, name, base, attrs)
-        return super().__new__(cls, name, base, attrs)
+class Women(metaclass=МetaWomen):
+    title = 'заголовок'
+    content = 'контент'
+    photo = 'путь к фото'
 
 
-class Point(metaclass=Meta2):
-    def get_coords(self):
-        return (0, 0)
-
-
-pt = Point()
-print(pt.MAX_COORD)
-print(pt.get_coords())
-
-
-class Point(metaclass=Meta):
-    def get_coords(self):
-        return 0, 0
-
-
-pt = Point()
-print(pt.MAX_COORD)
-print(pt.get_coords())
+w = Women()
+print(w.__dict__)
