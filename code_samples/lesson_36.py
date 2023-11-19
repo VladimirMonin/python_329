@@ -8,15 +8,23 @@ Lesson 34
 """
 
 
-def create_class_point(name, base, attrs):
-    # name - имя класса
-    # base - базовый класс (object)
-    # attrs - атрибуты класса
-    attrs.update({'MAX_COORD': 100, 'MIN_COORD': 0})
-    return type(name, base, attrs)
+class Meta(type):
+    def __init__(cls, name, base, attrs):
+        super().__init__(name, base, attrs)
+        cls.MAX_COORD = 100
+        cls.MIN_COORD = 0
 
 
-class Point(metaclass=create_class_point):
+# Аналог метакласса Meta - только с изменением на этапе __new__ а не __init__
+class Meta2(type):
+    def __new__(cls, name, base, attrs):
+        attrs.update({'MAX_COORD': 100, 'MIN_COORD': 0})
+        # Изначальный вариант с type - тоже работает
+        # return type.__new__(cls, name, base, attrs)
+        return super().__new__(cls, name, base, attrs)
+
+
+class Point(metaclass=Meta2):
     def get_coords(self):
         return (0, 0)
 
@@ -24,13 +32,6 @@ class Point(metaclass=create_class_point):
 pt = Point()
 print(pt.MAX_COORD)
 print(pt.get_coords())
-
-
-class Meta(type):
-    def __init__(cls, name, base, attrs):
-        super().__init__(name, base, attrs)
-        cls.MAX_COORD = 100
-        cls.MIN_COORD = 0
 
 
 class Point(metaclass=Meta):
