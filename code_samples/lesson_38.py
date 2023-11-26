@@ -5,6 +5,11 @@ Lesson 38
 Сериализация и десериализация
 - JSON
 - Сериализация и десериализация + JSON
+
+# TODO
+Задание:
+Относительный путь к файлу
+Аннотация типов в методах возвращающих Bool
 """
 import json
 from dataclasses import dataclass
@@ -163,7 +168,7 @@ if __name__ == '__main__':
     # Создаем экземпляр класса ProductSerializer
     product_serializer = ProductSerializer()
 
-    # Получаем данные из JSON файла
+    # Получаем данные из JSON файла файл лежит на один уровень выше в папке data
     with open('D:\Syncthing\Работа\Academy_Top\ПРИМЕРЫ КОДА\python_329_code\data\wb_api.json', 'r', encoding='utf-8') as f:
         data = json.load(f)
 
@@ -171,6 +176,22 @@ if __name__ == '__main__':
     products = product_serializer.deserialize(data['data']['products'])
 
     # Выводим результат
-    for product in products:
-        print(product)
+    # for product in products:
+    #     print(product)
 
+
+    # Добавляем сохранение данных в pickle файл
+
+    import pickle
+
+    # Код сохранения данных в pickle файл
+    with open('D:\Syncthing\Работа\Academy_Top\ПРИМЕРЫ КОДА\python_329_code\data\wb_api.pickle', 'wb') as f:
+        pickle.dump(products, f)
+
+    # Код загрузки данных из pickle файла
+    with open('D:\Syncthing\Работа\Academy_Top\ПРИМЕРЫ КОДА\python_329_code\data\wb_api.pickle', 'rb') as f:
+        products_2 = pickle.load(f)
+
+    # Выводим результат
+    for product in products_2:
+        print(product)
