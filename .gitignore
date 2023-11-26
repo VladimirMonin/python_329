@@ -35,3 +35,4 @@ win_log.md
 /data/cities_set.json
 /code_samples/log.txt
 /code_samples/logs.txt
+/data/wb_api.pickle
