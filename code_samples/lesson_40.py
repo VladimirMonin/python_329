@@ -8,7 +8,7 @@ Lesson 40
 import json
 from dataclasses import dataclass, field
 from pprint import pprint
-from typing import List, Any, Dict, Optional
+from typing import List, Any, Dict, Optional, Set
 
 
 class JsonFileHandler:
@@ -71,14 +71,6 @@ class JsonFileHandler:
         return cities_set
 
 
-"""
-2. **Реализация датакласса `City`**:
-   - Создайте датакласс `City` с атрибутами, соответствующими ключам в JSON-файле.
-   - Реализуйте возможность сортировки объектов по названию города.
-
-"""
-
-
 @dataclass(order=True)
 class City:
     """
@@ -93,16 +85,6 @@ class City:
     population: int = field(compare=False)
 
 
-"""
-3. **Классы десериализации и валидации**:
-   - **Класс `DataValidator`**: Для проверки и корректировки данных. Методы класса должны:
-     - Определить "плохие" буквы, на которые не начинаются названия городов, исключая такие города из датасета.
-     - Проверить тип данных для каждого поля (название города - строка, население - число).
-     - Привести название города к формату с заглавной буквы, если требуется.
-"""
-
-
-
 class DataValidator:
     """
     Класс DataValidator для проверки и корректировки данных.
@@ -111,10 +93,11 @@ class DataValidator:
     Проверить тип данных для каждого поля (название города - строка, население - число).
     Привести название города к формату с заглавной буквы, если требуется.
     """
-
+    #TODO Не работает проверка плохих букв!
     def __init__(self, cities_list: List[dict]):
         self.cities_list = cities_list
         self.bad_letters: set = self.get_bad_letters_from_cities_list()
+        print(f'Плохие буквы: {self.bad_letters}')
 
     def get_bad_letters_from_cities_list(self) -> set:
         """
@@ -129,7 +112,7 @@ class DataValidator:
             first_letters.add(city['name'][0].lower())
             last_letters.add(city['name'][-1].lower())
 
-        bad_cities_set = first_letters - last_letters
+        bad_cities_set = last_letters - first_letters
         return bad_cities_set
 
     def check_city_name(self, city_name: str) -> bool:
@@ -177,12 +160,6 @@ class DataValidator:
                 validated_data.append(city)
         return validated_data
 
-"""
-4. **Класс `DataSerializer`**: Для десериализации данных из JSON. Использует `DataValidator` для проверки данных.
-- Экземпляр класса `DataSerializer` должен принимать в конструкоре экземпляр JsonFileHandler а так же экземпляр DataValidator.
-- Метод `get_validated_data` должен возвращать список словарей с валидными данными.
-"""
-
 
 class DataSerializer:
     """
@@ -207,15 +184,22 @@ class DataSerializer:
         return [City(**city) for city in self.__validated_data]
 
 
+"""
+4. **Интеграция десериализации в игру**:
+   - Измените логику игры так, чтобы она использовала десериализованные данные. При загрузке игры, данные должны проходить через валидацию и десериализацию.
+   - Результатом должен быть список объектов `City`, используемых в игре.
+"""
 
 
 class CityGame:
-    def __init__(self, cities: Cities):
-        self.cities = cities
+    def __init__(self, cities_obj: List[City]):
+        self.cities = cities_obj
+        self.cities_set: Set[str] = {city.name for city in self.cities}
         self.human_city: str = ''
         self.computer_city: str = ''
 
-    def check_game_rules(self, last_city: str, new_city: str) -> bool:
+    @staticmethod
+    def check_game_rules(last_city: str, new_city: str) -> bool:
         """
         Метод проверки правил игры
         :param last_city:
@@ -237,7 +221,7 @@ class CityGame:
             print('Вы проиграли')
             return False
 
-        if self.human_city not in self.cities.get_cities_list():
+        if self.human_city not in self.cities_set:
             print(f'Города {self.human_city} нет в списке. Вы проиграли')
             return False
 
@@ -246,8 +230,9 @@ class CityGame:
                 print(f'Вы проиграли. Ваш ответ не начинается на букву {self.computer_city[-1]}')
                 return False
 
-        self.cities.remove_city(self.human_city)
+        self.cities_set.remove(self.human_city)
         self.human_city = self.human_city
+
         return True
 
     def computer_step(self):
@@ -255,25 +240,24 @@ class CityGame:
         Метод для хода компьютера
         :return:
         """
-
-        for city in self.cities.get_cities_list():
-            # Проверка правил игры методом
-            if self.check_game_rules(self.human_city, city):
-                print(f'Компьютер называет город: {city}')
-                self.computer_city = city
-                self.cities.remove_city(city)
+        for city in self.cities:
+            if city.name[0].lower() == self.human_city[-1].lower():
+                self.computer_city = city.name
+                self.cities_set.remove(self.computer_city)
+                print(f'Компьютер назвал город {self.computer_city}')
                 return True
-
-        else:
-            print('Вы победили! Компьютер не смог назвать город')
-            return False
+        print('Вы выиграли. Компьютер не смог назвать город')
+        return False
 
 
 class GameManager:
-    def __init__(self):
-        self.json_file = JsonFileHandler('../data/cities_set.json')
-        self.cities = Cities(self.json_file.read_file())
-        self.game = CityGame(self.cities)
+    def __init__(self, json_file_handler: JsonFileHandler, data_validator: DataValidator,
+                 data_serializer: DataSerializer, city_game_obj: CityGame):
+        self.json_handler_obj: JsonFileHandler = json_file_handler
+        self.data_validator_obj: DataValidator = data_validator
+        self.data_serializer_obj: DataSerializer = data_serializer
+        self.cities: List[City] = self.data_serializer_obj.serialize_data
+        self.game: CityGame = city_game_obj
 
     def __call__(self):
         self.run_game()
@@ -287,4 +271,9 @@ class GameManager:
 
 
 if __name__ == "__main__":
-    json_path = '../data/cities.json'
+    json_file_handler = JsonFileHandler('../data/cities.json')
+    data_validator = DataValidator(json_file_handler.read_file())
+    data_serializer = DataSerializer(json_file_handler, data_validator)
+    game = CityGame(data_serializer.serialize_data)
+    game_manager = GameManager(json_file_handler, data_validator, data_serializer, game)
+    game_manager()
