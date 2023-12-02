@@ -177,6 +177,29 @@ class GameManager:
 
 
 if __name__ == "__main__":
-
+    """
+    1. **Подготовка JSON-файла**: 
+   - Создайте JSON-файл из датасета городов России. Каждый город должен быть представлен словарем с ключами:
+    название города, 
+    регион РФ,
+     население.
+   - Структура файла: список словарей.
+    """
     from data.cities import cities
-    pprint(cities)
+    # Перепаковываем данные. Список словарей с ключами name subject population
+    cities_list = [
+        {
+            'name': city['name'],
+            'subject': city['subject'],
+            'population': city['population']
+        }
+        for city in cities
+
+    ]
+
+    # Записываем в файл
+    with open('../data/cities.json', 'w', encoding='utf-8') as file:
+        json.dump(cities_list, file, ensure_ascii=False, indent=4)
+
+
+
