@@ -6,6 +6,7 @@ Lesson 40
 - Добавление ручной сериализации и валидации данных + dataclass
 """
 import json
+from dataclasses import dataclass, field
 from pprint import pprint
 from typing import List, Any, Dict, Optional
 
@@ -70,34 +71,26 @@ class JsonFileHandler:
         return cities_set
 
 
-# Создаем dataclass Cities который в инит создает объект JsonFileHandler и вызывает метод get_cities_set
+"""
+2. **Реализация датакласса `City`**:
+   - Создайте датакласс `City` с атрибутами, соответствующими ключам в JSON-файле.
+   - Реализуйте возможность сортировки объектов по названию города.
 
-class Cities:
+"""
+
+
+@dataclass(order=True)
+class City:
     """
-    Класс Cities
-    __init__(self, city_data): Конструктор класса Cities, который принимает список городов city_data и инициализирует состояние объекта. В этом конструкторе происходит наполнение городами.
+    Датакласс City. Содержит данные:
+    Название города
+    Субъект РФ
+    Население
+    Доступна сортировка по названию города. Для остальных полей сортировка не доступна
     """
-
-    def __init__(self, cities_list: list):
-        self.cities_set: set = set(cities_list)
-
-    def get_cities_list(self) -> set:
-        """
-        Метод для получения списка городов
-        :
-
-        :return:
-        """
-        return set(self.cities_set)
-
-    def remove_city(self, city: str) -> None:
-        """
-        Метод для удаления города из списка
-        :param city:
-        :return:
-        """
-        self.cities_set.discard(city)
-
+    name: str
+    subject: str = field(compare=False)
+    population: int = field(compare=False)
 
 class CityGame:
     def __init__(self, cities: Cities):
@@ -177,29 +170,4 @@ class GameManager:
 
 
 if __name__ == "__main__":
-    """
-    1. **Подготовка JSON-файла**: 
-   - Создайте JSON-файл из датасета городов России. Каждый город должен быть представлен словарем с ключами:
-    название города, 
-    регион РФ,
-     население.
-   - Структура файла: список словарей.
-    """
-    from data.cities import cities
-    # Перепаковываем данные. Список словарей с ключами name subject population
-    cities_list = [
-        {
-            'name': city['name'],
-            'subject': city['subject'],
-            'population': city['population']
-        }
-        for city in cities
-
-    ]
-
-    # Записываем в файл
-    with open('../data/cities.json', 'w', encoding='utf-8') as file:
-        json.dump(cities_list, file, ensure_ascii=False, indent=4)
-
-
-
+    json_path = '../data/cities.json'
