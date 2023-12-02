@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+            },
+            "subject": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+            },
+            "population": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50000000
+            }
+        },
+        "required": ["name", "subject", "population"],
+        "additionalProperties": false
+    }
+}
