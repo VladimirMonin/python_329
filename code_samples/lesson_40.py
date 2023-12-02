@@ -184,6 +184,31 @@ class DataValidator:
 """
 
 
+class DataSerializer:
+    """
+    Класс DataSerializer для десериализации данных из JSON.
+    Использует DataValidator для проверки данных.
+    Экземпляр класса DataSerializer должен принимать в конструкоре экземпляр JsonFileHandler а так же экземпляр DataValidator.
+    Метод get_validated_data должен возвращать список словарей с валидными данными.
+    """
+
+    def __init__(self, json_file_handler: JsonFileHandler, data_validator: DataValidator):
+        self.json_file_handler = json_file_handler
+        self.data_validator = data_validator
+        self.__row_data: List[dict] = self.json_file_handler.read_file()
+        self.__validated_data: List[dict] = self.data_validator.validate_data()
+        self.serialize_data: List[City] = self.serialize_data()
+
+    def serialize_data(self) -> List[City]:
+        """
+        Метод сериализации данных
+        :return:
+        """
+        return [City(**city) for city in self.__validated_data]
+
+
+
+
 class CityGame:
     def __init__(self, cities: Cities):
         self.cities = cities
