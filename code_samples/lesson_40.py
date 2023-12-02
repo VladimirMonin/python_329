@@ -92,6 +92,94 @@ class City:
     subject: str = field(compare=False)
     population: int = field(compare=False)
 
+
+"""
+3. **Классы десериализации и валидации**:
+   - **Класс `DataValidator`**: Для проверки и корректировки данных. Методы класса должны:
+     - Определить "плохие" буквы, на которые не начинаются названия городов, исключая такие города из датасета.
+     - Проверить тип данных для каждого поля (название города - строка, население - число).
+     - Привести название города к формату с заглавной буквы, если требуется.
+   - **Класс `DataSerializer`**: Для десериализации данных из JSON. Использует `DataValidator` для проверки данных.
+"""
+
+
+class DataValidator:
+    """
+    Класс DataValidator для проверки и корректировки данных.
+    Методы класса должны:
+    Определить "плохие" буквы, на которые не начинаются названия городов, исключая такие города из датасета.
+    Проверить тип данных для каждого поля (название города - строка, население - число).
+    Привести название города к формату с заглавной буквы, если требуется.
+    """
+
+    def __init__(self, cities_list: List[dict]):
+        self.cities_list = cities_list
+        self.bad_letters: set = self.get_bad_letters_from_cities_list()
+
+    def get_bad_letters_from_cities_list(self) -> set:
+        """
+        Метод для получения списка плохих букв
+        :return:
+        """
+
+        first_letters = set()
+        last_letters = set()
+
+        for city in self.cities_list:
+            first_letters.add(city['name'][0].lower())
+            last_letters.add(city['name'][-1].lower())
+
+        bad_cities_set = first_letters - last_letters
+        return bad_cities_set
+
+    def check_city_name(self, city_name: str) -> bool:
+        """
+        Метод проверки названия города
+        :param city_name:
+        :return:
+        """
+        if city_name[0].lower() in self.bad_letters:
+            return False
+        else:
+            return True
+
+    def check_city_population(self, city_population: int) -> bool:
+        """
+        Метод проверки населения города
+        :param city_population:
+        :return:
+        """
+        if not isinstance(city_population, int):
+            return False
+        else:
+            return True
+
+    def check_city_name_case(self, city_name: str) -> str:
+        """
+        Метод проверки регистра названия города
+        :param city_name:
+        :return:
+        """
+        if city_name.islower():
+            return city_name.title()
+        else:
+            return city_name
+
+    def validate_data(self) -> List[dict]:
+        """
+        Метод валидации данных
+        :return:
+        """
+        validated_data = []
+        for city in self.cities_list:
+            if self.check_city_name(city['name']) and self.check_city_population(city['population']):
+                city['name'] = self.check_city_name_case(city['name'])
+                validated_data.append(city)
+        return validated_data
+
+
+
+
 class CityGame:
     def __init__(self, cities: Cities):
         self.cities = cities
