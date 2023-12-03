@@ -19,27 +19,94 @@ from jsonschema import validate, ValidationError
 
 from data.marvel import simple_set
 
-# Схема для валидации данных, которые импортируем из data.marvel
-# У нас массив, состоящий из строк, длинной от 3 до 100 символов
-schema = {
-    "type": "array",
-    "items": {
-        "type": "string",
-        "minLength": 3,
-        "maxLength": 100
+
+
+users_data = [
+    {
+        "email": "user1@example.com",
+        "username": "user1"
+    },
+    {
+        "email": "user2@example.com",
+        "username": "user2"
+    },
+    {
+        "email": "user3@example.com",
+        "username": "user3"
+    },
+    {
+        "email": "user4",
+        "username": "user4"
+    },
+    {
+        "email": "invalid-email",
+        "username": "user5"
+    },
+    {
+        "email": "user6@example.com",
+        "username": "user6"
+    },
+    {
+        "email": "user7@example.com",
+        "username": "user7"
+    },
+    {
+        "email": "user8@example.com",
+        "username": "user8"
+    },
+    {
+        "email": "user9@example.com",
+        "username": "user9"
+    },
+    {
+        "email": "user10@example.com",
+        "username": "user10"
+    },
+    {
+        "email": "user11@example.com",
+        "username": "user11"
+    },
+    {
+        "email": "user12@example.com",
+        "username": "user12"
+    },
+    {
+        "email": "user13@example.com",
+        "username": "user13"
+    },
+    {
+        "email": "user14",
+        "username": "user14"
+    },
+    {
+        "email": "invalid-email",
+        "username": "user15"
+    },
+    {
+        "email": "user16@example.com",
+        "username": "user16"
+    },
+    {
+        "email": "user17@example.com",
+        "username": "user17"
+    },
+    {
+        "email": "user18@example.com",
+        "username": "user18"
+    },
+    {
+        "email": "user19@example.com",
+        "username": "user19"
+    },
+    {
+        "email": "user20@example.com",
+        "username": "user20"
     }
-}
+]
 
-# Валидация данных
-simple_list = list(simple_set)
-try:
-    validate(instance=simple_list, schema=schema)
-except ValidationError as error:
-    print(error)
-else:
-    print('Данные валидны')
-finally:
-    print('Валидация завершена')
-
-
-
+"""
+Практика!
+1. Создать схему для валидации данных из users_data
+2. Валидировать данные из users_data в цикле
+3. Вывести невалидные данные в консоль
+"""
