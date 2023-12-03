@@ -11,6 +11,8 @@ Lesson 42
 
 pip install jsonschema
 """
+from pprint import pprint
+
 import jsonschema
 from jsonschema import validate, ValidationError
 
@@ -24,7 +26,7 @@ from data.marvel import simple_set
 users_data = [
     {
         "email": "user1@example.com",
-        "username": "user1"
+        "username": 2
     },
     {
         "email": "user2@example.com",
@@ -59,7 +61,7 @@ users_data = [
         "username": "user9"
     },
     {
-        "email": "user10@example.com",
+        "email": 2,
         "username": "user10"
     },
     {
@@ -88,7 +90,7 @@ users_data = [
     },
     {
         "email": "user17@example.com",
-        "username": "user17"
+        "username": "17"
     },
     {
         "email": "user18@example.com",
@@ -101,6 +103,18 @@ users_data = [
     {
         "email": "user20@example.com",
         "username": "user20"
+    },
+    {
+        "email": "user20@example.com",
+        "username": "u&ser20"
+    },
+    {
+        "email": "user20@example.com",
+        "username": "us er20"
+    },
+    {
+        "email": "user20@example.com",
+        "username": "user_sfsfsfsfsf_sfsfsfddfsf_sfsdf20"
     }
 ]
 
@@ -110,3 +124,41 @@ users_data = [
 2. Валидировать данные из users_data в цикле
 3. Вывести невалидные данные в консоль
 """
+
+# 1. Создать схему для валидации каждого словаря из users_data,
+# используя jsonschema. Для првоерки емейлов - "format": "email"
+# Для проверки username - "pattern": "^[a-zA-Z0-9_]{4,20}$"
+schema = {
+    "type": "object",
+    "properties": {
+        "email": {
+            "type": "string",
+            "format": "email"
+        },
+        "username": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_]{4,20}$"
+        }
+    },
+    "required": ["email", "username"],
+    "additionalProperties": False
+}
+
+# 2. Валидировать данные из users_data в цикле
+invalid_data = []
+valid_data = []
+for user in users_data:
+    try:
+        # Делаем попытку валидировать данные по одному пользователю
+        validate(user, schema, format_checker=jsonschema.FormatChecker())
+        valid_data.append(user)
+        #  Если данные не валидны, то валидатор выкинет ошибку
+    except ValidationError as e:
+        invalid_data.append(user)
+        # print(e)
+
+
+# 3. Вывести невалидные данные в консоль
+pprint(invalid_data)
+
+
