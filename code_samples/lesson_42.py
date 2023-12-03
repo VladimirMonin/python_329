@@ -176,8 +176,13 @@ class UserSerializer:
         self.serialize_data: List[User] | None = None
 
     def __call__(self) -> List[User]:
-        self.__validated_data: List[dict] = self.data_validator.validate_data()
-        self.serialize_data: List[User] = self.serialize_data()
+        # Валидация и сериализация данных
+        self.__validated_data = [user_data for user_data in self.users_data
+                                 if self.data_validator.validate_user(user_data, is_checker=True)]
+
+        self.serialize_data = [User(**user_data) for user_data in self.__validated_data]
+        return self.serialize_data
+
 
 user_validator = UserValidator(schema)
 user_serializer = UserSerializer(users_data, user_validator)
