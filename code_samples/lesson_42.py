@@ -11,7 +11,9 @@ Lesson 42
 
 pip install jsonschema
 """
+from dataclasses import dataclass
 from pprint import pprint
+from typing import List
 
 import jsonschema
 from jsonschema import validate, ValidationError
@@ -20,8 +22,6 @@ from jsonschema import validate, ValidationError
 # из jsonschema необходим для работы этого параметра
 
 from data.marvel import simple_set
-
-
 
 users_data = [
     {
@@ -144,21 +144,43 @@ schema = {
     "additionalProperties": False
 }
 
-# 2. Валидировать данные из users_data в цикле
-invalid_data = []
-valid_data = []
-for user in users_data:
-    try:
-        # Делаем попытку валидировать данные по одному пользователю
-        validate(user, schema, format_checker=jsonschema.FormatChecker())
-        valid_data.append(user)
-        #  Если данные не валидны, то валидатор выкинет ошибку
-    except ValidationError as e:
-        invalid_data.append(user)
-        # print(e)
+
+# Окультуриваем код. Делаем датакласс для пользователей, класс для валидации и класс для сериализации
+# Класс сериализации будет принимать весь список словарей и иметь __call__ метод, который будет возвращать
+# список объектов User.
+
+@dataclass
+class User:
+    email: str
+    username: str
 
 
-# 3. Вывести невалидные данные в консоль
-pprint(invalid_data)
+class UserValidator:
+    def __init__(self, schema: dict):
+        self.schema = schema
+
+    def validate_user(self, user: dict, is_checker=False) -> bool:
+        try:
+            validate(user, self.schema,
+                     format_checker=jsonschema.FormatChecker() if is_checker else None)
+            return True
+        except ValidationError as e:
+            return False
 
 
+class UserSerializer:
+    def __init__(self, users_data: List[dict], data_validator: UserValidator):
+        self.users_data = users_data
+        self.data_validator = data_validator
+        self.__validated_data: List[dict] | None = None
+        self.serialize_data: List[User] | None = None
+
+    def __call__(self) -> List[User]:
+        self.__validated_data: List[dict] = self.data_validator.validate_data()
+        self.serialize_data: List[User] = self.serialize_data()
+
+user_validator = UserValidator(schema)
+user_serializer = UserSerializer(users_data, user_validator)
+result = user_serializer()
+
+pprint(result)
