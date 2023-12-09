@@ -12,6 +12,8 @@ Lesson 44
 - Marshmallow Dataclass
 - Десериализация данных
 - Создание схемы на основе датакласса (marshmallow_dataclass)
+- Сериализация данных, метод dumps
+- Десериализация данных, метод loads
 -
 
 """
@@ -70,4 +72,14 @@ try:
 except ValidationError as err:
     print(err.messages)
 
-[print(type(film)) for film in films]
+# Проверяем тип данных в списке - это объекты Film
+# [print(type(film)) for film in films]
+
+# Делаем обратное преобразование - сериализацию данных в JSON строку и выводим на печать
+films_list = FilmSchema(many=True)
+films_json = films_list.dumps(films)
+pprint(films_list)
+print(type(films_json))
+print(films_json)
+
+
