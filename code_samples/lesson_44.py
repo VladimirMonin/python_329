@@ -22,8 +22,9 @@ from marshmallow import Schema, fields, ValidationError
 from marshmallow_dataclass import class_schema
 from dataclasses import dataclass
 from pprint import pprint
+import json
 
-from data.marvel import small_dict
+from data.marvel import full_dict
 
 marvel_films_json = """
 [
@@ -82,4 +83,13 @@ pprint(films_list)
 print(type(films_json))
 print(films_json)
 
+# Делаем из full_dict список словарей и сохраняем в JSON файл
+result = []
 
+for film in full_dict.values():
+    result.append(film)
+
+print(result)
+
+with open("../data/marvel.json", "w", encoding="utf-8") as file:
+    json.dump(result, file, ensure_ascii=False, indent=4)
