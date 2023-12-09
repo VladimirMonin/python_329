@@ -34,3 +34,64 @@ from data.marvel import full_dict
 Создайте объект схемы и валидируйте данные из json файла (many=True)
 Получите на выходе список объектов датакласса
 """
+"""
+Пример json файла:
+    [
+    {
+        "title": "Мстители: Секретные войны",
+        "year": 2027,
+        "director": "TBA",
+        "screenwriter": "Майкл Уолдрон",
+        "producer": "Нет данных",
+        "stage": "Шестая фаза"
+    },
+    {
+        "title": "Войны в доспехах",
+        "year": "TBA",
+        "director": "TBA",
+        "screenwriter": "Яссер Лестер",
+        "producer": "Кевин Файги и Джонатан Шварц",
+        "stage": "Шестая фаза"
+    },
+    ]
+"""
+
+
+# Решение
+
+@dataclass
+class Film:
+    title: str
+    year: int
+    director: str
+    screenwriter: str
+    producer: str
+    stage: str
+
+
+# Создайте схему на основе датакласса, используя библиотеку marshmallow_dataclass
+film_schema = class_schema(Film)
+
+# Читаем данные из файла
+with open('../data/marvel.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+# Валидируем и десериализуем данные
+# Сразу для всех объектов (ошибка - последние 2 объекта не валидируются)
+# try:
+#     films = film_schema(many=True).load(data)
+# except ValidationError as e:
+#     print(e)
+#     exit(1)
+
+# Пошагово для каждого объекта
+films = []
+for film in data:
+    try:
+        films.append(film_schema().load(film))
+    except ValidationError as e:
+        print(e)
+
+
+# Получаем список объектов датакласса
+pprint(films, indent=4)
