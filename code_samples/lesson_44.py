@@ -27,37 +27,41 @@ fields - Классы для создания полей. Все они насл
 
 # Опишем схему для валидации данных для проверки ключей и значений словаря.
 
-small_dict = {
-    'Железный человек': 2008,
-    'Невероятный Халк': 2008,
-    'Железный человек 2': 2010,
-    'Тор': 2011,
-    'Первый мститель': 2011,
-    'Мстители': 2012,
-    'Мстsdfители': '222',
-}
+marvel_films = [
+    {
+        "title": "The Avengers",
+        "year": 2012
+    },
+    {
+        "title": "Avengers: Age of Ultron",
+        "year": 2015,
+    },
+    {
+        "title": 13,
+        "year": "Avengers"
+    },
+]
+
+# Создадим класс схемы для валидации данных. Наследуемся от класса Schema.
+# В нем описываем поля, которые будут валидироваться.
+# Поля описываются как атрибуты класса. Передаем в них классы полей из библиотеки marshmallow.
+# Поля валидируются в порядке их описания в классе.
 
 
-# Создадим класс схемы, который будет наследоваться от класса Schema.
-# В нем будут описаны поля, которые будут проверяться на валидность.
-
-class MovieSchema(Schema):
-    # Поле title - строка.
-    title = fields.String()
-    # Поле year - целое число - тип int. (не строка!)
-    year = fields.Integer(validate=lambda n: isinstance(n, int))
+class FilmSchema(Schema):
+    title = fields.Str()
+    year = fields.Int()
 
 
-# Создаем экземпляр класса схемы и передаем в него данные для валидации.
+# Создаем экземпляр класса схемы.
+film_schema = FilmSchema()
 
-schema = MovieSchema()
+# Валидируем данные. Передаем в метод load данные для валидации.
+# Используем many=True
 
-# Проверяем данные на валидность.
-# Объявляем цикл по словарю, который будем проверять.
-for key, value in small_dict.items():
-    # В блоке try вызываем метод load экземпляра класса схемы и передаем в него данные для валидации.
-    # В блоке except обрабатываем ошибки валидации.
-    try:
-        schema.load({'title': key, 'year': value})
-    except ValidationError as exc:
-        pprint(exc.messages)
+try:
+    result = film_schema.load(marvel_films, many=True)
+    pprint(result)
+
+except ValidationError as err:
+    pprint(err.messages)
