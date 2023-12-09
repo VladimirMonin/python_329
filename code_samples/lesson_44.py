@@ -5,63 +5,69 @@ Lesson 44
 Тема: Marshmallow
 - Установка pip install marshmallow
 - Импорт основных классов и инструментов
+- Создание схемы для валидации данных
+- Валидация данных, метод load
+- Many=True
+- ValidationError
+- Marshmallow Dataclass
+- Десериализация данных
+- Создание схемы на основе датакласса (marshmallow_dataclass)
+-
 
 """
 
 from marshmallow import Schema, fields, ValidationError
+from marshmallow_dataclass import class_schema
 from dataclasses import dataclass
 from pprint import pprint
 
 from data.marvel import small_dict
 
-"""
-Основные классы и инструменты:
-- Schema - базовый класс для создания схемы
-- fields - классы для создания полей
-- ValidationError - класс для обработки ошибок валидации
-
-Schema - Наследуемся от этого класса для создания "схемы" для валидации данных.
-fields - Классы для создания полей. Все они наследуются от класса Field.
-В них есть параметры, которые позволяют задавать правила валидации, а так же инструменты, как нарприер, метод validate.
-"""
-
-# Опишем схему для валидации данных для проверки ключей и значений словаря.
-
-marvel_films = [
+marvel_films_json = """
+[
     {
         "title": "The Avengers",
         "year": 2012
     },
     {
         "title": "Avengers: Age of Ultron",
-        "year": 2015,
+        "year": 2015
     },
     {
-        "title": 13,
-        "year": "Avengers"
-    },
+        "title": "Человек-паук: Вдали от дома",
+        "year": "2023"
+    }
 ]
-
-# Создадим класс схемы для валидации данных. Наследуемся от класса Schema.
-# В нем описываем поля, которые будут валидироваться.
-# Поля описываются как атрибуты класса. Передаем в них классы полей из библиотеки marshmallow.
-# Поля валидируются в порядке их описания в классе.
+"""
 
 
-class FilmSchema(Schema):
-    title = fields.Str()
-    year = fields.Int()
+# Опишем датакласс, на основе которого будет создана схема для валидации данных
+
+@dataclass
+class Film:
+    title: str
+    year: int
+
+    def __str__(self):
+        return f"{self.title} ({self.year})"
+
+    def __repr__(self):
+        return f"{self.title} ({self.year})"
 
 
-# Создаем экземпляр класса схемы.
-film_schema = FilmSchema()
+# pip install marshmallow_dataclass
+# Создадим схему для валидации данных на основе датакласса Film
 
-# Валидируем данные. Передаем в метод load данные для валидации.
-# Используем many=True
+FilmSchema = class_schema(Film)
+
+# Делаем валидацию и десериализацию данных - на выходе получаем объекты Film
+# Используем many=True, так как валидируем список словарей
 
 try:
-    result = film_schema.load(marvel_films, many=True)
-    pprint(result)
+    films = FilmSchema(many=True).loads(marvel_films_json)
+
 
 except ValidationError as err:
-    pprint(err.messages)
+    print(err.messages)
+
+[print(type(film)) for film in films]
