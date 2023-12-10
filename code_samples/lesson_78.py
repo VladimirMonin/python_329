@@ -50,7 +50,7 @@ json_string_datetime_lessons = """
         "teacher": "Vladimir",
         "students": ["Bob", "Alice", "John"],
         "subject": "Python",
-        "teacher_mail": "/&&*@mail.ru"
+        "teacher_mail": "vm@mail.ru"
     },
     {
         "lesson": "lesson_3",
@@ -62,32 +62,17 @@ json_string_datetime_lessons = """
     }
 ]
 """
+"""
+У нас несколько вариантов работы.
+1. Мы можем сделать детальную Схему(наследование от Schema) и валидировать каждое поле отдельно.
+Но на выходе мы получим словарь, а не объект датакласса.
 
+2. Мы можем сделать схему на основе датакласса, но тогда мы не сможем валидировать каждое поле отдельно.
+Получим просто базовую валидацию, которая есть в датаклассе.
 
-class LessonSchema(Schema):
-    lesson = fields.String(required=True)
-    datetime = fields.DateTime(required=True, format="%Y-%m-%d:%H-%M-%S")
-    teacher = fields.String(required=True)
-    students = fields.List(fields.String(), required=True)
-    subject = fields.String(required=True)
-    teacher_mail = fields.Email(required=True,
-                                validate=[
-                                    validate.Length(min=3, max=20, error="Email must be between 3 and 20 characters long"),
-                                    validate.Email(error="Not a valid email address"),
-                                    validate.Regexp(regex=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", error="Not a valid email address")
-                                ])
-
-    # Meta - класс для управления поведением схемы
-    class Meta:
-        # ordered = True - сохраняет порядок полей в схеме
-        # unknown = "EXCLUDE" - игнорирует неизвестные поля
-        # fields - список полей, которые будут включены в схему
-        # exclude - список полей, которые будут исключены из схемы
-        # additional - дополнительные поля, которые будут включены в схему
-        # load_only - поля, которые будут доступны только при загрузке данных
-        # dump_only - поля, которые будут доступны только при выгрузке данных
-        # dateformat - формат даты
-        pass
+3. Мы можем сделать схему на основе 
+датакласса, и расширить ее, добавив валидацию для каждого поля.
+"""
 
 
 @dataclass
@@ -100,18 +85,41 @@ class Lesson:
     teacher_mail: str
 
 
-# Проводим валидацию и десериализацию данных в список объектов датакласса
-# Получаем объекты пайтон
+# Создание схемы на основе датакласса
+LessonSchema = class_schema(Lesson)
+
+
+# Создание схемы на основе датакласса, и расширение ее
+class ExtendedLessonSchema(LessonSchema):
+    datetime = fields.DateTime(format="%Y-%m-%d:%H-%M-%S", required=True)
+
+    teacher_mail = fields.Email(required=True,
+                                validate=[
+                                    validate.Length(min=3, max=20,
+                                                    error="Email must be between 3 and 20 characters long"),
+                                    validate.Email(error="Not a valid email address"),
+                                    validate.Regexp(regex=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
+                                                    error="Not a valid email address")
+                                ])
+
+
+# Чтение данных json строки
 data = json.loads(json_string_datetime_lessons)
-# Создаем объект схемы
-schema = LessonSchema(many=True)
-# Валидируем и десериализуем данные в список объектов датакласса Lesson
 
+# Создание объекта схемы
+schema = ExtendedLessonSchema(many=True)
 
-lessons = schema.load(data)
+# Валидация данных
+try:
+    result = schema.load(data)
+    pprint(result)
+except ValidationError as e:
+    print(e)
+    exit(1)
 
-pprint(lessons)
-print(type(lessons))
-print(type(lessons[0]))
-print(lessons[0]['datetime'])
+# Генерация JSON схемы
+json_schema = LessonSchema().json_schema()
 
+# Сохранение JSON схемы в файл
+with open("lesson_78.json", "w", encoding="utf-8") as f:
+    json.dump(json_schema, f, indent=4)
