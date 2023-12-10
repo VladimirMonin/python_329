@@ -31,7 +31,7 @@ from dataclasses import dataclass
 from pprint import pprint
 from typing import List
 
-from marshmallow import Schema, fields, ValidationError
+from marshmallow import Schema, fields, ValidationError, validate
 from marshmallow_dataclass import class_schema
 
 json_string_datetime_lessons = """
@@ -50,7 +50,7 @@ json_string_datetime_lessons = """
         "teacher": "Vladimir",
         "students": ["Bob", "Alice", "John"],
         "subject": "Python",
-        "teacher_mail": "mva@mail.ru"
+        "teacher_mail": "/&&*@mail.ru"
     },
     {
         "lesson": "lesson_3",
@@ -70,12 +70,24 @@ class LessonSchema(Schema):
     teacher = fields.String(required=True)
     students = fields.List(fields.String(), required=True)
     subject = fields.String(required=True)
-    teacher_mail = fields.Email(required=True, validate=lambda x: x.endswith("@mail.ru"))
+    teacher_mail = fields.Email(required=True,
+                                validate=[
+                                    validate.Length(min=3, max=20, error="Email must be between 3 and 20 characters long"),
+                                    validate.Email(error="Not a valid email address"),
+                                    validate.Regexp(regex=r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", error="Not a valid email address")
+                                ])
 
     # Meta - класс для управления поведением схемы
     class Meta:
         # ordered = True - сохраняет порядок полей в схеме
-        ordered = True
+        # unknown = "EXCLUDE" - игнорирует неизвестные поля
+        # fields - список полей, которые будут включены в схему
+        # exclude - список полей, которые будут исключены из схемы
+        # additional - дополнительные поля, которые будут включены в схему
+        # load_only - поля, которые будут доступны только при загрузке данных
+        # dump_only - поля, которые будут доступны только при выгрузке данных
+        # dateformat - формат даты
+        pass
 
 
 @dataclass
@@ -101,6 +113,5 @@ lessons = schema.load(data)
 pprint(lessons)
 print(type(lessons))
 print(type(lessons[0]))
-# print(lessons[0])
-# print(lessons[0].__dict__)
+print(lessons[0]['datetime'])
 
