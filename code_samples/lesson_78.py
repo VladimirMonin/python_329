@@ -34,6 +34,8 @@ from typing import List
 from marshmallow import Schema, fields, ValidationError, validate
 from marshmallow_dataclass import class_schema
 
+from marshmallow_jsonschema import JSONSchema
+
 json_string_datetime_lessons = """
 [
     {
@@ -117,8 +119,9 @@ except ValidationError as e:
     print(e)
     exit(1)
 
-# Генерация JSON схемы
-json_schema = LessonSchema().json_schema()
+# Создание экземпляра JSONSchema и преобразование схемы marshmallow в JSON схему
+# pip install marshmallow-jsonschema
+json_schema = JSONSchema().dump(ExtendedLessonSchema())
 
 # Сохранение JSON схемы в файл
 with open("lesson_78.json", "w", encoding="utf-8") as f:
