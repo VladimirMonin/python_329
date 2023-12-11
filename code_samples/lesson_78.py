@@ -2,6 +2,9 @@
 Lesson 78
 10.12.2023
 # Тема: Marshmallow
+Расширение схемы marshmallow созданной на основе датакласса другой схемой
+Сохранение схемы marshmallow в JSON схему
+
 Поля
 - String - Строки
 - Integer - Целые числа
@@ -25,6 +28,47 @@ Lesson 78
 - validate - Валидатор. Может принимать функцию, метод или список функций и методов, и имеет свои инструметы, в т.ч. регулярные выражения
 - load_only - Только при загрузке данных
 - dump_only - Только при выгрузке данных
+
+Встроенный валидатор validate
+- Length - Длина строки или списка (validate.Length(min=3, max=20))
+- Range - Диапазон чисел (validate.Range(min=0, max=100))
+- Equal - Равенство значений (validate.Equal(10))
+- OneOf - Одно из значений (validate.OneOf([1, 2, 3]))
+- NoneOf - Ни одно из значений (validate.NoneOf([1, 2, 3]))
+- Regexp - Регулярное выражение (validate.Regexp(regex=r"^[a-zA-Z0-9_.+-]+$"))
+- Predicate - Предикат. Проверяет значение на истинность (validate.Predicate(lambda x: x > 10))
+- URL - Ссылка (validate.URL())
+- Email - Почта (validate.Email())
+- UUID - Уникальный идентификатор. Проверяет значение на соответствие формату UUID (validate.UUID())
+- InstanceOf - Экземпляр класса  (validate.InstanceOf(int))
+- Nested - Вложенная схема (validate.Nested(Schema)) Проверяет вложенные данные на соответствие схеме
+- List - Список (validate.List([validate.Length(min=3, max=20), validate.Email()]))
+- Tuple - Кортеж (validate.Tuple([validate.Length(min=3, max=20), validate.Email()]))
+- Dict - Словарь (validate.Dict([validate.Length(min=3, max=20), validate.Email()]))
+- Callable - Вызываемый объект проверяет значение на истинность (validate.Callable(lambda x: x > 10))
+- Method - Метод проверяет значение на истинность (validate.Method("validate_name"))
+- Function - Функция проверяет значение на истинность (validate.Function(lambda x: x > 10))
+- AllOf - Все из значений (validate.AllOf([validate.Length(min=3, max=20), validate.Email()]))
+- AnyOf - Любое из значений (validate.AnyOf([validate.Length(min=3, max=20), validate.Email()]))
+- NoneOf - Ни одно из значений (validate.NoneOf([validate.Length(min=3, max=20), validate.Email()]))
+- ContainsOnly - Содержит только (validate.ContainsOnly([validate.Length(min=3, max=20), validate.Email()]))
+- ContainsNoneOf - Не содержит ни одного из (validate.ContainsNoneOf([validate.Length(min=3, max=20), validate.Email()]))
+- ContainsAnyOf - Содержит любое из (validate.ContainsAnyOf([validate.Length(min=3, max=20), validate.Email()]))
+- ContainsAllOf - Содержит все из (validate.ContainsAllOf([validate.Length(min=3, max=20), validate.Email()]))
+- ContainsOnly - Содержит только (validate.ContainsOnly([validate.Length(min=3, max=20), validate.Email()]))
+- ContainsSchema - Содержит схему (validate.ContainsSchema(Schema))
+- KeysSubset - Ключи подмножества (validate.KeysSubset([validate.Length(min=3, max=20), validate.Email()]))
+- KeysEqual - Ключи равны (validate.KeysEqual([validate.Length(min=3, max=20), validate.Email()]))
+- KeysOrdered - Ключи упорядочены (validate.KeysOrdered([validate.Length(min=3, max=20), validate.Email()]))
+- KeysUnique - Ключи уникальны (validate.KeysUnique([validate.Length(min=3, max=20), validate.Email()]))
+- ValuesSubset - Значения подмножества (validate.ValuesSubset([validate.Length(min=3, max=20), validate.Email()]))
+- ValuesEqual - Значения равны (validate.ValuesEqual([validate.Length(min=3, max=20), validate.Email()]))
+- ValuesOrdered - Значения упорядочены (validate.ValuesOrdered([validate.Length(min=3, max=20), validate.Email()]))
+- ValuesUnique - Значения уникальны (validate.ValuesUnique([validate.Length(min=3, max=20), validate.Email()]))
+- Schema - Схема (validate.Schema(Schema))
+
+
+
 """
 import json
 from dataclasses import dataclass
