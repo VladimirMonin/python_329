@@ -8,85 +8,77 @@ Lesson 82
 - Паттерн "Фабричный метод" - Factory Method
 """
 
+from typing import List
 
-# ПРИМЕР 1
-class Product:
-    def show_info(self):
-        pass
-
-
-class ConcreteProductA(Product):
-    def show_info(self):
-        return "Product A"
+"""
+Цель паттерна "Строитель" заключается в предоставлении способа конструирования сложного объекта пошагово. 
+Этот паттерн отделяет конструкцию сложного объекта от его представления, 
+так что один и тот же процесс конструирования может привести к созданию различных представлений.
+"""
 
 
-class ConcreteProductB(Product):
-    def show_info(self):
-        return "Product B"
+class Burger:
+    def __init__(self):
+        self.ingredients: List[str] = []
+
+    def add_ingredient(self, ingredient: str) -> None:
+        self.ingredients.append(ingredient)
 
 
-class Creator:
-    def factory_method(self):
-        pass
+class BurgerBuilder:
+    def __init__(self):
+        self.burger = Burger()
+
+    def add_lettuce(self) -> None:
+        self.burger.add_ingredient("салат")
+
+    def add_tomato(self) -> None:
+        self.burger.add_ingredient("помидор")
+
+    def add_cheese(self) -> None:
+        self.burger.add_ingredient("сыр")
+
+    def get_burger(self) -> Burger:
+        return self.burger
 
 
-class ConcreteCreatorA(Creator):
-    def factory_method(self):
-        return ConcreteProductA()
+# Клиентский код
+builder = BurgerBuilder()
+builder.add_cheese()
+builder.add_lettuce()
+burger = builder.get_burger()
+print(burger.ingredients)
 
 
-class ConcreteCreatorB(Creator):
-    def factory_method(self):
-        return ConcreteProductB()
+class Document:
+    def __init__(self):
+        self.pages: List[str] = []
+
+    def add_page(self, page: str) -> None:
+        self.pages.append(page)
 
 
-# Использование фабричного метода
-creator_a = ConcreteCreatorA()
-product_a = creator_a.factory_method()
-print(product_a.show_info())
+class DocumentBuilder:
+    def __init__(self):
+        self.document = Document()
 
-creator_b = ConcreteCreatorB()
-product_b = creator_b.factory_method()
-print(product_b.show_info())
+    def add_title(self, title: str) -> None:
+        self.document.add_page(f"Заголовок: {title}")
 
+    def add_paragraph(self, paragraph: str) -> None:
+        self.document.add_page(f"Абзац: {paragraph}")
 
-# ПРИМЕР 2
-class PaymentGateway:
-    def process_payment(self, amount):
-        pass
+    def add_footer(self, footer: str) -> None:
+        self.document.add_page(f"Подвал: {footer}")
 
-
-class PayPalPaymentGateway(PaymentGateway):
-    def process_payment(self, amount):
-        # Здесь бы происходила логика обработки платежа через PayPal API
-        return f"Payment of ${amount} processed via PayPal"
+    def get_document(self) -> Document:
+        return self.document
 
 
-class StripePaymentGateway(PaymentGateway):
-    def process_payment(self, amount):
-        # Здесь бы происходила логика обработки платежа через Stripe API
-        return f"Payment of ${amount} processed via Stripe"
-
-
-class PaymentGatewayFactory:
-    def create_payment_gateway(self, gateway_type):
-        pass
-
-
-class ConcretePaymentGatewayFactory(PaymentGatewayFactory):
-    def create_payment_gateway(self, gateway_type):
-        if gateway_type == "paypal":
-            return PayPalPaymentGateway()
-        elif gateway_type == "stripe":
-            return StripePaymentGateway()
-        else:
-            raise ValueError("Unsupported payment gateway")
-
-
-# Использование фабричного метода
-payment_gateway_factory = ConcretePaymentGatewayFactory()
-paypal_gateway = payment_gateway_factory.create_payment_gateway("paypal")
-stripe_gateway = payment_gateway_factory.create_payment_gateway("stripe")
-
-print(paypal_gateway.process_payment(100))
-print(stripe_gateway.process_payment(150))
+# Клиентский код
+doc_builder = DocumentBuilder()
+doc_builder.add_title("Документация на Python")
+doc_builder.add_paragraph("Python - мощный язык программирования.")
+doc_builder.add_footer("Конец документа")
+document = doc_builder.get_document()
+print("\n".join(document.pages))
