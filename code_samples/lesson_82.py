@@ -7,61 +7,65 @@ Lesson 82
 - Паттерн "Строитель" - Builder
 - Паттерн "Фабричный метод" - Factory Method
 - Паттерн "Стратегия" - Strategy
+- Паттерн "Наблюдатель" - Observer
 """
 
 from typing import List
 
 """
- Паттерн "Стратегия" – это один из фундаментальных шаблонов проектирования, 
- который позволяет определить семейство алгоритмов, 
- инкапсулировать каждый из них и сделать их взаимозаменяемыми. 
+Паттерн "Наблюдатель" (Observer) является одним из ключевых поведенческих паттернов проектирования. 
+Он предназначен для установления отношения "один-ко-многим" между объектами, таким образом, 
+что при изменении состояния одного объекта (издателя или субъекта) все зависимые объекты (наблюдатели) 
+автоматически уведомляются и обновляются.
  
- Этот паттерн позволяет изменять алгоритмы независимо от клиентов, которые их используют.
 """
 
 
-class Strategy:
-    def execute(self, data):
+class EventListener:
+    def notify(self, event):
         raise NotImplementedError
 
 
-class ConcreteStrategyA(Strategy):
-    def execute(self, data):
-        return sum(data)
+class EmailAlertListener(EventListener):
+    def notify(self, event):
+        print(f"Отправка уведомления на электронную почту: {event}")
 
 
-class ConcreteStrategyB(Strategy):
-    def execute(self, data):
-        return max(data)
-
-class ConcreteStrategyС(Strategy):
-    def execute(self, data):
-        return min(data)
+class LoggingListener(EventListener):
+    def notify(self, event):
+        print(f"Логирование события: {event}")
 
 
-class Context:
-    def __init__(self, strategy: Strategy):
-        self._strategy = strategy
+class TelegramAlertListener(EventListener):
+    def notify(self, event):
+        print(f"Отправка уведомления в телеграм: {event}")
 
-    def set_strategy(self, strategy: Strategy):
-        self._strategy = strategy
 
-    def execute_strategy(self, data):
-        return self._strategy.execute(data)
+class EventManager:
+    def __init__(self):
+        self.listeners = []
+
+    def subscribe(self, listener):
+        self.listeners.append(listener)
+
+    def unsubscribe(self, listener):
+        self.listeners.remove(listener)
+
+    def notify(self, event):
+        for listener in self.listeners:
+            listener.notify(event)
 
 
 # Пример использования
-data = [1, 2, 3, 4, 5]
-context = Context(ConcreteStrategyA())
-result = context.execute_strategy(data)
-print("Результат ConcreteStrategyA:", result)
+event_manager = EventManager()
+email_listener = EmailAlertListener()
+logging_listener = LoggingListener()
+telegram_listener = TelegramAlertListener()
 
-context.set_strategy(ConcreteStrategyB())
-result = context.execute_strategy(data)
-print("Результат ConcreteStrategyB:", result)
+event_manager.subscribe(email_listener)
+event_manager.subscribe(logging_listener)
+event_manager.subscribe(telegram_listener)
+event_manager.notify("Пользователь вошел в систему")
 
-context.set_strategy(ConcreteStrategyС())
-result = context.execute_strategy(data)
-print("Результат ConcreteStrategyС:", result)
-
-
+event_manager.unsubscribe(email_listener)
+event_manager.notify("Пользователь вышел из системы")
