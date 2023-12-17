@@ -8,64 +8,73 @@ Lesson 82
 - Паттерн "Фабричный метод" - Factory Method
 - Паттерн "Стратегия" - Strategy
 - Паттерн "Наблюдатель" - Observer
+- Паттерн "Фасад" - Facade
 """
 
 from typing import List
 
 """
-Паттерн "Наблюдатель" (Observer) является одним из ключевых поведенческих паттернов проектирования. 
-Он предназначен для установления отношения "один-ко-многим" между объектами, таким образом, 
-что при изменении состояния одного объекта (издателя или субъекта) все зависимые объекты (наблюдатели) 
-автоматически уведомляются и обновляются.
+Паттерн "Фасад" (Facade) — это структурный паттерн проектирования, используемый в программировании для 
+создания простого интерфейса для взаимодействия с одной или несколькими более сложными системами. 
+
+Этот паттерн часто применяется для облегчения работы с большими и сложными кодовыми библиотеками или API.
  
 """
 
 
-class EventListener:
-    def notify(self, event):
-        raise NotImplementedError
+# Сложная система (подсистемы)
+class SubsystemOne:
+    def operation(self):
+        return "SubsystemOne: Ready!"
 
 
-class EmailAlertListener(EventListener):
-    def notify(self, event):
-        print(f"Отправка уведомления на электронную почту: {event}")
+class SubsystemTwo:
+    def operation(self):
+        return "SubsystemTwo: Go!"
 
 
-class LoggingListener(EventListener):
-    def notify(self, event):
-        print(f"Логирование события: {event}")
-
-
-class TelegramAlertListener(EventListener):
-    def notify(self, event):
-        print(f"Отправка уведомления в телеграм: {event}")
-
-
-class EventManager:
+# Фасад
+class Facade:
     def __init__(self):
-        self.listeners = []
+        self._subsystem_one = SubsystemOne()
+        self._subsystem_two = SubsystemTwo()
 
-    def subscribe(self, listener):
-        self.listeners.append(listener)
-
-    def unsubscribe(self, listener):
-        self.listeners.remove(listener)
-
-    def notify(self, event):
-        for listener in self.listeners:
-            listener.notify(event)
+    def operation(self):
+        return f"{self._subsystem_one.operation()}\n{self._subsystem_two.operation()}\nFacade: Finished!"
 
 
-# Пример использования
-event_manager = EventManager()
-email_listener = EmailAlertListener()
-logging_listener = LoggingListener()
-telegram_listener = TelegramAlertListener()
+# Клиентский код
+facade = Facade()
+print(facade.operation())
 
-event_manager.subscribe(email_listener)
-event_manager.subscribe(logging_listener)
-event_manager.subscribe(telegram_listener)
-event_manager.notify("Пользователь вошел в систему")
 
-event_manager.unsubscribe(email_listener)
-event_manager.notify("Пользователь вышел из системы")
+# Подсистемы
+class Engine:
+    def start(self):
+        return "Engine is starting"
+
+
+class AirConditioner:
+    def turn_on(self):
+        return "AirConditioner is on"
+
+
+class Radio:
+    def play_music(self):
+        return "Playing music"
+
+
+# Фасад
+class Car:
+    def __init__(self):
+        self.engine = Engine()
+        self.ac = AirConditioner()
+        self.radio = Radio()
+
+    def turn_on_everything(self):
+        return f"{self.engine.start()}\n{self.ac.turn_on()}\n{self.radio.play_music()}"
+
+
+# Клиентский код
+car = Car()
+print(car.turn_on_everything())
