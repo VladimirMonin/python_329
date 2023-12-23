@@ -1,6 +1,6 @@
 import pytest
 
-from lesson_84 import multiply
+from lesson_84 import multiply, is_palindrome
 
 
 def test_true():
@@ -65,7 +65,7 @@ def test_multiply(a, b, expected):
     (2, 3, 6),
     (3, 4, 12),
     (4, 5, 20),
-    pytest.param(5, 5, 26, marks=pytest.mark.xfail), # помечаем тест, который всегда падает
+    pytest.param(5, 5, 26, marks=pytest.mark.xfail),  # помечаем тест, который всегда падает
     (2, 2, 4),
 ])
 def test_multiply(a, b, expected):
@@ -73,3 +73,34 @@ def test_multiply(a, b, expected):
     Параметризованный тест для функции multiply
     """
     assert multiply(a, b) == expected, f'Должно быть {expected}'
+
+
+# Фикстура для теста функции is_palindrome которая прочитает
+# ../data/palindromes.json и вернет рандомный палиндром (из списка словарей по ключу слово)
+# будет генерироваться для каждой функции, которая ее вызывает
+# (т.е. для каждого теста)
+
+@pytest.fixture
+def palindrome():
+    """
+    Фикстура для теста функции is_palindrome которая прочитает
+    ../data/palindromes.json и вернет рандомный палиндром (из списка словарей по ключу слово)
+    """
+    import random
+    import json
+    # Кодировка файла - utf-8
+    with open('../data/palindromes.json', encoding='utf-8') as f:
+        # загружаем данные из файла в переменную data
+        data = json.load(f)
+    # выбираем рандомный словарь
+    random_dict = random.choice(data)
+    print(random_dict)
+    # возвращаем значение по ключу слово
+    return random_dict['слово']
+
+# Тест
+def test_palindrome(palindrome):
+    """
+    Тест для функции is_palindrome
+    """
+    assert is_palindrome(palindrome), f'{palindrome} должно быть палиндромом'

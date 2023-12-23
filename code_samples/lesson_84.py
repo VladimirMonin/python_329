@@ -19,3 +19,12 @@ def multiply(a: int, b: int) -> int:
     :return: Результат умножения
     """
     return a * b
+
+
+def is_palindrome(word:str) -> bool:
+    """
+    Проверяет, является ли слово палиндромом
+    :param word: Слово
+    :return: True, если слово палиндром, иначе False
+    """
+    return word.lower() == word[::-1].lower()
