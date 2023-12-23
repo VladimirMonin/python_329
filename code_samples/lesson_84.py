@@ -7,6 +7,7 @@ Lesson 84: Pytest
 - assert
 - @pytest.mark.xfail - помечаем тест, который всегда падает
 - @pytest.mark.parametrize - параметризация тестов
+
 """
 
 
