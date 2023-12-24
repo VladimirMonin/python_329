@@ -10,6 +10,8 @@ Lesson 86: Pytest
 - Мокирование методов классов?
 - Маркировка тестов
 """
+import json
+
 
 def get_sum(a: int, b: int) -> int:
     """
@@ -20,4 +22,20 @@ def get_sum(a: int, b: int) -> int:
     """
     return a + b
 
-# TODO ПЕРЕРЫВ!)
+
+def get_marvel_data_set(file: str = '../data/marvel.json') -> list[dict]:
+    """Функция читает данные из файла ../data/marvel.json
+    и возвращает список словарей, с измененными ключами
+    """
+    with open(file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    # Меняем ключи в словарях
+    result = []
+    for item in data:
+        result.append({
+            'title': item['title'],
+            'year': item['year'],
+            'stage': item['stage']
+        })
+    return result

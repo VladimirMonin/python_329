@@ -121,7 +121,8 @@ class WeatherRequest:
 
     def __get_response(self):
         response = requests.get(self.base_url, params=self.params)
-        self.__response = response.json()
+        result = response.json()
+        self.__response = result
 
     def __call__(self, city_name):
         self.city_name = city_name
@@ -208,4 +209,5 @@ def main():
         print(err.messages)
 
 
-main()
+if __name__ == "__main__":
+    main()
