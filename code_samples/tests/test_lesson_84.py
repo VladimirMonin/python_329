@@ -1,19 +1,19 @@
 import pytest
-
-from lesson_84 import multiply, is_palindrome
+from code_samples.lesson_84 import multiply, is_palindrome
 
 
 def test_true():
     """
     Тест, который всегда проходит
     """
-    assert True
+    assert True, "Удивительно, но True не True"
 
 
 def test_positive_multiply():
     """
     Тест для функции multiply
     """
+
     assert multiply(2, 3) == 6, "Должно быть 6"
 
 
@@ -89,7 +89,7 @@ def palindrome():
     import random
     import json
     # Кодировка файла - utf-8
-    with open('../data/palindromes.json', encoding='utf-8') as f:
+    with open(r'D:\Syncthing\Работа\Academy_Top\ПРИМЕРЫ КОДА\python_329_code\data\palindromes.json', encoding='utf-8') as f:
         # загружаем данные из файла в переменную data
         data = json.load(f)
     # выбираем рандомный словарь
