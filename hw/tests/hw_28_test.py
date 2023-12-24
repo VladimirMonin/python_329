@@ -35,35 +35,51 @@ def weather_request():
     return result
 
 
+@pytest.fixture(scope='module')
+def weather_request_parametrize():
+    result = WeatherRequest()
+    return result
+
+
 # Список городов и их координаты для параметризации теста с именами городов
 cities = [
     ('Москва', {"lon": 37.6156, "lat": 55.7522}),
     ('Воронеж', {"lon": 39.17, "lat": 51.6664}),
     ('Санкт-Петербург', {"lon": 30.2642, "lat": 59.8944}),
-    ('Краснодар', {"lon": 38.9747, "lat": 45.0448}),
-    ('Сочи', {"lon": 39.7303, "lat": 43.5858}),
+    ('Краснодар', {"lon": 38.9769, "lat": 45.0328}),
+    ('Сочи', {"lon": 39.7303, "lat": 43.6}),
 ]
 
-# Пара
 
 # Тест 1 - проверяем то, что в ответе есть ['sys']['name'] == 'Москва'
-def test_weather_request(weather_request):
+def test_weather_request_city_name(weather_request):
     assert weather_request['name'] == 'Москва'
 
 
 # Тест 2 - проверяем что {"coord": {"lon": 37.6156, "lat": 55.7522} в ответе
-def test_weather_request_2(weather_request):
+def test_weather_request_coord(weather_request):
     assert weather_request['coord'] == {"lon": 37.6156, "lat": 55.7522}
 
 
 # Тест 3 - проверяем то, что в "weather" есть ключи id, main, description, icon
-def test_weather_request_3(weather_request):
+def test_weather_request_weather_key(weather_request):
     assert weather_request['weather'][0].keys() == {'id', 'main', 'description', 'icon'}
 
 
 # Тест 4 - проверяем то, что в "main" есть ключи temp, feels_like, temp_min, temp_max, pressure, humidity
-def test_weather_request_4(weather_request):
+def test_weather_request_main_key(weather_request):
     main_keys = set(weather_request['main'].keys())
     # проверяем что в "main" есть ключи temp, feels_like, temp_min, temp_max, pressure, humidity
     # через метод issubset
     assert {'temp', 'feels_like', 'temp_min', 'temp_max', 'pressure', 'humidity'}.issubset(main_keys)
+
+
+# Параметризованный и маркированный тест для проверки названия города
+@pytest.mark.parametrize('city_name, expected_coords', cities)
+@pytest.mark.slow
+def test_weather_request_city_coodrd_name_parametrize_slow(weather_request_parametrize, city_name, expected_coords):
+    response = weather_request_parametrize(city_name)
+    assert response['name'] == city_name
+    assert response['coord'] == expected_coords
+
+# Для запуска всех тестов, кроме маркированных как медленные, нужно использовать ключ -m
