@@ -74,7 +74,7 @@ def test_weather_request_main_key(weather_request):
     assert {'temp', 'feels_like', 'temp_min', 'temp_max', 'pressure', 'humidity'}.issubset(main_keys)
 
 
-# Параметризованный и маркированный тест для проверки названия города
+# Тест 5 - Параметризованный и маркированный тест для проверки названия города
 @pytest.mark.parametrize('city_name, expected_coords', cities)
 @pytest.mark.slow
 def test_weather_request_city_coodrd_name_parametrize_slow(weather_request_parametrize, city_name, expected_coords):
