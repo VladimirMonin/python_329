@@ -24,10 +24,14 @@ from sqlalchemy.orm import sessionmaker
 import os
 import openpyxl
 
-Base = declarative_base()
+Base = declarative_base()  # Базовый класс для создания моделей
 
 
 class Business(Base):
+    """
+    Модель для таблицы 2gis_businesses
+
+    """
     __tablename__ = '2gis_businesses'
     id = Column(Integer, primary_key=True, autoincrement=True)  # Внутренний ID
     gis_id = Column(Integer, nullable=True)  # ID из файла, может быть пустым
@@ -74,6 +78,11 @@ session = Session()
 
 
 def process_workbook(workbook_path: str):
+    """
+    Функция для построчного чтения данных из файла xlsx
+    :param workbook_path:
+    :return:
+    """
     # Открытие файла xlsx
     workbook = openpyxl.load_workbook(workbook_path, read_only=True)
     sheet = workbook.active
@@ -121,19 +130,49 @@ def process_workbook(workbook_path: str):
         yield business
 
 
+def write_log(workbook_path: str, error: str):
+    """
+    Функция записи ошибок в лог-файл txt
+    :param workbook_path:
+    :param error:
+    :return:
+    """
+    with open('errors.txt', 'a', encoding='utf-8') as f:
+        f.write(f'Ошибка при сохранении данных из файла {workbook_path}: {error}\n')
+
+
 def save_to_database(workbook_path: str):
-    for business in process_workbook(workbook_path):
-        session.add(business)
-    session.commit()
+    """
+    Функция сохранения данных из файла xlsx в базу данных SQLite3
+    :param workbook_path:
+    :return:
+    """
+    try:
+        for business in process_workbook(workbook_path):
+            session.add(business)
+        session.commit()
+    except Exception as e:
+        print(f'Ошибка при сохранении данных из файла {workbook_path}: {e}')
+        write_log(workbook_path, e)
+        session.rollback()  # Откатываем транзакцию в случае ошибки
 
 
-# Рекурсивный обход директорий и поиск файлов xlsx
-for root, dirs, files in os.walk(
-        r"E:\Полная база 2ГИС (август 2023)\Полная база 2ГИС (август 2023)\gis_region"):  # Замените '.' на вашу стартовую директорию
-    for file in files:
-        if file.endswith('.xlsx'):
-            workbook_path = os.path.join(root, file)
-            save_to_database(workbook_path)
+def main():
+    """
+    Основная функция
+    :return:
+    """
+    # Рекурсивный обход директорий и поиск файлов xlsx
+    for root, dirs, files in os.walk(
+            r"E:\Полная база 2ГИС (август 2023)\Полная база 2ГИС (август 2023)\gis_region"):  # Замените '.' на вашу стартовую директорию
+        for file in files:
+            if file.endswith('.xlsx'):
+                workbook_path = os.path.join(root, file)
+                save_to_database(workbook_path)
 
-# Закрытие сессии
-session.close()
+    # Закрываем сессию
+    session.close()
+
+
+if __name__ == '__main__':
+    main()
