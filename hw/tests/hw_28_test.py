@@ -82,4 +82,4 @@ def test_weather_request_city_coodrd_name_parametrize_slow(weather_request_param
     assert response['name'] == city_name
     assert response['coord'] == expected_coords
 
-# Для запуска всех тестов, кроме маркированных как медленные, нужно использовать ключ -m
+# Для запуска всех тестов, кроме маркированных как медленные, нужно использовать ключ -m "not slow"

@@ -38,4 +38,6 @@ win_log.md
 /data/wb_api.pickle
 /code_samples/lesson_78.json
 /hw/hw_28_schema.json
-/code_samples/my_database.db
+/data/my_database.db
+/code_samples/lesson_44/businesses.db
+/code_samples/lesson_44/errors.txt

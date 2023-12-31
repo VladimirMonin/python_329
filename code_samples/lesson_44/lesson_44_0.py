@@ -24,6 +24,8 @@ from sqlalchemy.orm import sessionmaker
 import os
 import openpyxl
 
+FOLDER_PATH = r"C:\1"
+
 Base = declarative_base()  # Базовый класс для создания моделей
 
 
@@ -163,8 +165,7 @@ def main():
     :return:
     """
     # Рекурсивный обход директорий и поиск файлов xlsx
-    for root, dirs, files in os.walk(
-            r"E:\Полная база 2ГИС (август 2023)\Полная база 2ГИС (август 2023)\gis_region"):  # Замените '.' на вашу стартовую директорию
+    for root, dirs, files in os.walk(FOLDER_PATH):  # Замените '.' на вашу стартовую директорию
         for file in files:
             if file.endswith('.xlsx'):
                 workbook_path = os.path.join(root, file)
