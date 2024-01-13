@@ -1,6 +1,6 @@
 import pytest
 from sqlalchemy import create_engine
-from sqlalchemy import text
+from sqlalchemy import text  # Используется для создания запроса из строки
 
 # Список параметров для тестов, где каждый элемент - это кортеж из имени файла и ожидаемого числа строк
 test_parameters = [
