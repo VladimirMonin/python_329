@@ -1,10 +1,21 @@
+import os
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy import text  # Используется для создания запроса из строки
 
 # Список параметров для тестов, где каждый элемент - это кортеж из имени файла и ожидаемого числа строк
 test_parameters = [
-    (r'1.sql', 6)
+    (r'1.sql', 11264),
+    (r'2.sql', 10),
+    (r'3.sql', 3),
+    (r'4.sql', 30),
+    (r'5.sql', 71671),
+    (r'6.sql', 73675),
+    (r'7.sql', 25060),
+    (r'8.sql', 504232),
+    (r'9.sql', 73558),
+    (r'10.sql', 1),
 ]
 
 
@@ -18,6 +29,16 @@ def db_engine():
     database_path = r'sqlite:///D:\Syncthing\Работа\Academy_Top\ПРИМЕРЫ КОДА\python_329_code\data\businesses.db'
     engine = create_engine(database_path)
     return engine
+
+
+# Параметризированный тест проверяющий наличие в этой же папки файлов с запросами
+@pytest.mark.parametrize("sql_file,expected_rows", test_parameters)
+def is_file_exists(sql_file):
+    """
+    Тест проверяет, что файл с запросом существует
+    :param sql_file: Имя файла с запросом
+    """
+    assert os.path.exists(sql_file), f"Файл {sql_file} не найден"
 
 
 @pytest.mark.parametrize("sql_file,expected_rows", test_parameters)
