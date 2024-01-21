@@ -1,10 +1,24 @@
 -- Lesson 48
 -- 21.01.2024
+-- Сегодня:
+-- FOREIGN KEY - внешний ключ
+-- 5 нормальных форм
+-- Нормализация
+-- CRUD - Create, Read, Update, Delete многотабличные запросы
+-- JOIN - LEFT JOIN, RIGHT JOIN, FULL JOIN, INNER JOIN
+
+
 
 -- Создать таблицу CREATE TABLE
 -- Вариант с прошлого урока хорош, но не всегда удобен
 -- Данные о специальности будут дублироваться в каждой строке
 -- Менять их будет сложно
+
+
+
+-- LEFT OUTER JOIN
+-- RIGHT OUTER JOIN
+-- FULL OUTER JOIN
 
 --CREATE TABLE students (
 --    id    INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -152,3 +166,4 @@ RIGHT JOIN majors ON students.major_id = majors.id;
 SELECT students.name, majors.major_name
 FROM students
 FULL JOIN majors ON students.major_id = majors.id;
+
