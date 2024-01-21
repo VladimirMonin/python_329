@@ -61,6 +61,94 @@ INSERT INTO students (name, age, major_id, gpa) VALUES
 ('Хасанов Шердорбек Улугбекович', 20, 1, NULL),
 ('Шибаев Юрий Николаевич', 20, 1, NULL);
 
+-- Добавим еще одного человека
+INSERT INTO students (name, age, major_id, gpa) VALUES
+--('Монин Владимир Александрович', 22, 3, 4.5),
+('Кузнецов Кузьма Кузьмич', 23, 2, 3.5),
+('Анна Ольговна Николаева', 24, 4, 4.5);
+
 -- Получаем данные из одной таблицы студенты
 SELECT * FROM students;
 
+-- Получаем все данные из таблицы студентов и название специальности
+SELECT students.*, majors.major_name
+FROM students
+JOIN majors ON students.major_id = majors.id;
+
+-- Такой же запрос с использованием alias (псевдонимов)
+select a.*, b.major_name
+from students a
+join majors b on a.major_id=b.id;
+
+-- Возьмем только имена и названия специальностей
+SELECT students.name, majors.major_name
+FROM students
+JOIN majors ON students.major_id = majors.id;
+
+-- Сделаем группировку по специальностям и посчитаем сколько студентов на каждой специальности
+SELECT majors.major_name, COUNT(*) AS "Количество студентов"
+FROM students
+JOIN majors ON students.major_id = majors.id
+GROUP BY majors.major_name;
+ORDER BY "Количество студентов" DESC;
+
+-- Сделаем UPDATE - обновим среднюю оценку на 5.0 у всех студентов у которых специальность Python web-разработчик
+-- именно по названию специальности
+-- Вариант 1
+UPDATE students
+SET gpa = 5.0
+WHERE major_id = (
+    SELECT id
+    FROM majors
+    WHERE major_name = 'Python web-разработчик'
+);
+
+-- Вариант 2
+UPDATE students
+SET gpa = 5.0
+WHERE major_id IN (
+    SELECT id
+    FROM majors
+    WHERE major_name = 'Python web-разработчик'
+);
+
+-- Удалим студентов с специальностью Python Middle-разработчик
+DELETE FROM students
+WHERE major_id = (
+    SELECT id
+    FROM majors
+    WHERE major_name = 'Python Middle-разработчик'
+);
+
+-- Виды JOIN
+-- INNER JOIN - возвращает только те строки, которые есть в обеих таблицах
+-- LEFT JOIN - возвращает все строки из левой таблицы и только те строки из правой таблицы, которые есть в левой
+-- RIGHT JOIN - возвращает все строки из правой таблицы и только те строки из левой таблицы, которые есть в правой
+-- FULL JOIN - возвращает все строки из обеих таблиц
+
+-- Добавляем сутеднта без специальности
+INSERT INTO students (name, age, major_id, gpa) VALUES
+('Николаева Ольга Павловна', 22, NULL, 4.5);
+
+-- JOIN - INNER JOIN
+SELECT students.name, majors.major_name
+FROM students
+JOIN majors ON students.major_id = majors.id;
+
+-- Получить студентов, даже если у них нет специальности
+-- LEFT JOIN
+SELECT students.name, majors.major_name
+FROM students
+LEFT JOIN majors ON students.major_id = majors.id;
+
+-- Получить специальности, даже если у них нет студентов
+-- RIGHT JOIN
+SELECT students.name, majors.major_name
+FROM students
+RIGHT JOIN majors ON students.major_id = majors.id;
+
+-- Получить все специальности и всех студентов
+-- FULL JOIN
+SELECT students.name, majors.major_name
+FROM students
+FULL JOIN majors ON students.major_id = majors.id;
