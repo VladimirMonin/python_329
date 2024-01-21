@@ -1,5 +1,14 @@
 --Lesson 45
 --13-01-2024
+-- Сегодня проходим:
+-- SELECT
+-- WHERE
+-- DISTINCT
+-- LIKE
+-- LIMIT
+-- OFFSET
+-- COUNT
+-- GROUP BY
 
 --выбрать все из 2gis_businesses
 SELECT * FROM "2gis_businesses"
