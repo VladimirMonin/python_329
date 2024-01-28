@@ -5,13 +5,13 @@ sqlite3 module
 # Импортируем модуль sqlite3
 import sqlite3
 
-SQL_FILE = ''
+SQL_FILE = 'lesson_50.sql'
+DB_PATH = '../data/lesson_50.db'
 
 # Создаем соединение с базой данных
-db_path = '../data/lesson_50.db'
 
 # Создаем соединение с базой данных (если базы данных нет, то она создается)
-conn = sqlite3.connect(db_path)
+conn = sqlite3.connect(DB_PATH)
 
 # Закрываем соединение с базой данных
 # conn.close()
@@ -40,3 +40,8 @@ cursor = conn.cursor()
 # cursor.fetchone() - получить одну строку
 # cursor.fetchall() - получить все строки
 
+# Читаем SQL запрос из файла
+with open(SQL_FILE, 'r', encoding='utf-8') as f:
+    sql_query = f.read()
+
+print(sql_query)
