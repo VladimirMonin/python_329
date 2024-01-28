@@ -170,5 +170,8 @@ JOIN groups ON students.group_id = groups.id;
 
 cursor.execute(select_q2)
 q1_result = cursor.fetchall()
-
 pprint(q1_result)
+# tabulate print
+from tabulate import tabulate
+print(tabulate(q1_result, headers=['id', 'first_name', 'middle_name', 'last_name', 'group_name'], tablefmt='grid'))
+
