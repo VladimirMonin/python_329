@@ -85,12 +85,16 @@ SQLite3 автоматически создает транзакцию для к
 #     conn.commit()
 
 # Выполним этот запрос с помощью cursor.execute(sql_query)
-"""
+
+group_add_query = """
 -- Добавляем группу в таблицу групп
 INSERT INTO groups (group_name) VALUES ('python329');
 """
 
-
+group_add_query2 = """
+-- Добавляем группу в таблицу групп
+INSERT INTO groups (group_name) VALUES ('python331');
+"""
 
 
 student_add_query = """
@@ -112,3 +116,17 @@ INSERT INTO students (first_name, middle_name, last_name, group_id) VALUES
 ('Шердорбек', 'Улугбекович', 'Хасанов', 1),
 ('Юрий', 'Николаевич', 'Шибаев', 1);
 """
+
+queries = [group_add_query, group_add_query2, student_add_query]
+# Явно делаем начало транзакции
+cursor.execute("BEGIN")
+for query in queries:
+    try:
+        cursor.execute(query)
+    except Exception as err:
+        print(err)
+        conn.rollback()
+        break
+else:
+    conn.commit()
+
