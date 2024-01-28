@@ -4,6 +4,7 @@ sqlite3 module
 """
 # Импортируем модуль sqlite3
 import sqlite3
+from pprint import pprint
 
 SQL_FILE = 'lesson_50.sql'
 DB_PATH = '../data/lesson_50.db'
@@ -41,8 +42,8 @@ cursor = conn.cursor()
 # cursor.fetchall() - получить все строки
 
 # Читаем SQL запрос из файла
-with open(SQL_FILE, 'r', encoding='utf-8') as f:
-    sql_query = f.read()
+# with open(SQL_FILE, 'r', encoding='utf-8') as f:
+#     sql_query = f.read()
 
 # print(sql_query)
 
@@ -118,15 +119,56 @@ INSERT INTO students (first_name, middle_name, last_name, group_id) VALUES
 """
 
 queries = [group_add_query, group_add_query2, student_add_query]
-# Явно делаем начало транзакции
-cursor.execute("BEGIN")
-for query in queries:
-    try:
-        cursor.execute(query)
-    except Exception as err:
-        print(err)
-        conn.rollback()
-        break
-else:
-    conn.commit()
 
+# Делаем через execute() и цикл
+# Явно делаем начало транзакции
+# cursor.execute("BEGIN")
+# for query in queries:
+#     try:
+#         cursor.execute(query)
+#     except Exception as err:
+#         print(err)
+#         conn.rollback()
+#         break
+# else:
+#     conn.commit()
+
+# Делаем через executmany()
+
+# Определяем коллекцию для добавления данных
+groups = [('python315',), ('python316',)]
+
+# Определяем запрос для executemany()
+group_add_query = """
+-- Добавляем группу в таблицу групп
+INSERT INTO groups (group_name) VALUES (?);
+"""
+
+# Явно делаем начало транзакции
+# cursor.execute("BEGIN")
+# try:
+#     cursor.executemany(group_add_query, groups)
+# except Exception as err:
+#     print(err)
+#     conn.rollback()
+# else:
+#     conn.commit()
+
+
+# Делаем чтение данных из таблицы групп
+
+select_q1 = """
+-- Добываем данные из таблицы групп
+SELECT * FROM groups;
+"""
+
+select_q2 = """
+-- Добываем данные из таблицы студентов, подставляя вместо id группы её название
+SELECT students.id, students.first_name, students.middle_name, students.last_name, groups.group_name FROM students
+JOIN groups ON students.group_id = groups.id;
+"""
+
+cursor.execute(select_q2)
+q1_result = cursor.fetchall()
+
+pprint(q1_result)

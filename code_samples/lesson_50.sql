@@ -109,3 +109,11 @@ INSERT INTO students (first_name, middle_name, last_name, group_id) VALUES
 ('Александр', 'Александрович', 'Тимофеев', 1),
 ('Шердорбек', 'Улугбекович', 'Хасанов', 1),
 ('Юрий', 'Николаевич', 'Шибаев', 1);
+
+
+-- Добываем данные из таблицы групп
+SELECT * FROM groups;
+
+-- Добываем данные из таблицы студентов, подставляя вместо id группы её название
+SELECT students.id, students.first_name, students.middle_name, students.last_name, groups.group_name FROM students
+JOIN groups ON students.group_id = groups.id;
