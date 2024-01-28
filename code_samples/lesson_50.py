@@ -44,4 +44,43 @@ cursor = conn.cursor()
 with open(SQL_FILE, 'r', encoding='utf-8') as f:
     sql_query = f.read()
 
-print(sql_query)
+# print(sql_query)
+
+# Два варианта выполнения запроса
+# 1. Разбить запрос по ; и выполнить каждый запрос отдельно через try/except
+# 2. Использовать метод executescript() - он сам разобьет запрос по ;
+
+# Выполняем запрос c помощью метода executescript()
+# cursor.executescript(sql_query)
+
+# Выполняем запрос c помощью метода execute()
+
+"""
+SQLite3 автоматически создает транзакцию для каждого запроса.
+Если запрос выполняется успешно, то транзакция автоматически фиксируется.
+
+Если запрос выполняется с ошибкой у нас нет возможности откатить ВСЕ изменения.
+"""
+# for query in sql_query.split(';'):
+#     try:
+#         # Делаем начало транзакции
+#         cursor.execute(query)
+#
+#     except sqlite3.DatabaseError as err:
+#         print(err)
+#         print(query)
+#         conn.rollback()
+#         break
+# else:
+#     conn.commit()
+
+# Выполняем запрос c помощью cursor.executescript(sql_query)
+
+try:
+    cursor.executescript(sql_query)
+except sqlite3.DatabaseError as err:
+    print(err)
+    conn.rollback()
+else:
+    conn.commit()
+

@@ -10,7 +10,12 @@
 -- 9. Выданные домашние задания (homework_id, group_id) - составной внешний ключ
 
 -- Создаем таблицу студентов (Sqlite)
-CREATE TABLE students (
+-- Создаем таблицу студентов если её нет
+--CREATE TABLE IF NOT EXISTS students (
+-- Если таблица уже есть, удаляем и создаем новую
+--DROP TABLE IF EXISTS students;
+--CREATE TABLE students (
+CREATE TABLE IF NOT EXISTS students (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     first_name TEXT NOT NULL,
     middle_name TEXT,
@@ -53,7 +58,7 @@ CREATE TABLE homeworks_done (
     work_text TEXT NOT NULL,
     homework_id INTEGER NOT NULL,
     student_id INTEGER NOT NULL,
-    status TEXT DEFAULT 'false'
+    status TEXT DEFAULT 'false',
 
 FOREIGN KEY (homework_id) REFERENCES homeworks(id),
 FOREIGN KEY (student_id) REFERENCES students(id)
