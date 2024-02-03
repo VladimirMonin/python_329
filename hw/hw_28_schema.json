@@ -1,0 +1,59 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "CurrentWeatherSchema": {
+            "properties": {
+                "city_name": {
+                    "title": "city_name",
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 80
+                },
+                "description": {
+                    "title": "description",
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 80,
+                    "pattern": "^[А-Яа-яЁёA-Za-z0-9\\s]+$"
+                },
+                "feels_like": {
+                    "title": "feels_like",
+                    "type": "number",
+                    "format": "float",
+                    "minimum": -80,
+                    "maximum": 80
+                },
+                "pop": {
+                    "title": "pop",
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "temp": {
+                    "title": "temp",
+                    "type": "number",
+                    "format": "float",
+                    "minimum": -80,
+                    "maximum": 80
+                },
+                "visibility": {
+                    "title": "visibility",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                }
+            },
+            "type": "object",
+            "required": [
+                "city_name",
+                "description",
+                "feels_like",
+                "temp",
+                "visibility"
+            ],
+            "additionalProperties": false
+        }
+    },
+    "$ref": "#/definitions/CurrentWeatherSchema"
+}

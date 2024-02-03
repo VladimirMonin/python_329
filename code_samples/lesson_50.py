@@ -1,6 +1,17 @@
 """
 Lesson 50
 sqlite3 module
+- Использование модуля sqlite3
+- cursor
+- conneciton
+- execute
+- executemany
+- executescript
+- fetchone
+- fetchall
+- commit
+- rollback
+- Exceptions
 """
 # Импортируем модуль sqlite3
 import sqlite3
