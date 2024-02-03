@@ -128,7 +128,7 @@ INSERT INTO MarvelCharacters_New (page_id, name, urlslug, identity_id, align_id,
 SELECT mc.page_id, mc.name, mc.urlslug,
        id.identity_id, al.align_id, ec.eye_id, hc.hair_id, s.sex_id, ls.status_id,
        mc.APPEARANCES, mc.FIRST_APPEARANCE, mc.Year
-FROM MarvelCharacters mc
+FROM MarvelCharacters mc -- назначение псевдонима для таблицы MarvelCharacters
 JOIN Identity id ON mc.identify = id.identity
 JOIN Alignment al ON mc.ALIGN = al.name
 JOIN EyeColor ec ON mc.EYE = ec.color

@@ -84,7 +84,7 @@ def main():
     # Запрос для query-параметров execute_many_queries (для вставки данных в таблицу city)
     insert_city_query = '''
     INSERT INTO city (city_name, lat, lon, population, subject_id, district_id) 
-    VALUES (?, ?, ?, ?, 
+    VALUES (?, ?, ?, ?,
         (SELECT id FROM subject WHERE subject_name = ?), 
         (SELECT id FROM district WHERE district_name = ?))
     '''

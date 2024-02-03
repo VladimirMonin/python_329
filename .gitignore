@@ -42,3 +42,14 @@ win_log.md
 /code_samples/lesson_44/businesses.db
 /code_samples/lesson_44/errors.txt
 /data/lesson_50.db
+/__init__.py
+/data/businesses.db
+/code_samples/lesson_44/businesses.db-journal
+/hw/hw_33/cities.db
+/code_samples/lesson_44/invalid_data.csv
+/hw/marvel.csv
+/hw/hw_32/marvel_not_normal.db
+/data/online_school.db
+/pytest.ini
+/.idea/workspace (2).xml
+/.env
