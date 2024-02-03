@@ -20,7 +20,7 @@ Lesson 51 - Знакомство с SQLAlchemy 2.0
 
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, Column, String, Integer
+from sqlalchemy import create_engine, Column, String, Integer, select
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 # Загрузка переменных окружения из файла .env
@@ -75,3 +75,46 @@ class User(Base):
 
 # Создание таблиц в базе данных
 Base.metadata.create_all(bind=engine)
+
+with Session() as session:
+    # Создание пользователя
+    # user = User(name="John", age=30)
+    # session.add(user)
+    # session.commit()
+
+
+    # Получение первого пользователя из базы данных
+    stmt = select(User).limit(1)
+    result = session.execute(stmt)
+    user1 = result.scalars().first()
+
+    # Получение всех пользователей
+    stmt = select(User)
+    result = session.execute(stmt)
+    users1 = result.scalars().all()
+
+    # Получение первых 10 пользователей
+    stmt = select(User).limit(10)
+    result = session.execute(stmt)
+    users2 = result.scalars().all()
+
+    # Получение пользователей с именем John
+    stmt = select(User).where(User.name == "John")
+    result = session.execute(stmt)
+    users3 = result.scalars().all()
+
+    # Получение пользователей с именем John и возрастом 30
+    stmt = select(User).where(User.name == "John", User.age == 30)
+    result = session.execute(stmt)
+    users4 = result.scalars().all()
+
+print(f'User ID: {user1.id}, Name: {user1.name}, Age: {user1.age}')
+
+for user in users1:
+    print(f'User ID: {user.id}, Name: {user.name}, Age: {user.age}')
+
+for user in users2:
+    print(f'User ID: {user.id}, Name: {user.name}, Age: {user.age}')
+
+for user in users3:
+    print(f'User ID: {user.id}, Name: {user.name}, Age: {user.age}')
