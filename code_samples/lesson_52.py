@@ -6,8 +6,8 @@ Lesson 52
 - Connection
 - Session
 """
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import create_engine, Integer, String, Column
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 # Основные сущности SQLAlchemy 2.0
 # - Engine - движок, который обеспечивает соединение с базой данных
@@ -61,3 +61,32 @@ class Student(Base):
 Base.metadata.create_all(engine)
 
 # Операции CRUD в рамках одной таблицы
+# - Create - создание новой записи
+
+"""
+Перед тем как мы начнем работать с объектами, необходимо создать сессию
+Это можно сделать с помощью объекта Session.
+
+Это открывает соединение с базой данных,
+которое будет использоваться для всех операций с базой данных.
+"""
+
+# Создание объекта Session
+Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+with Session() as session:
+    # Создание нового объекта Student
+    student = Student(
+        username="vic007",
+        email="victor_007@mail.ru",
+        password="123456",
+        teacher="Станислав Козлов",
+        faculty="Информационные технологии")
+
+    # Добавление объекта в сессию
+    session.add(student)
+
+    # Подтверждение транзакции
+    session.commit()
+
+
