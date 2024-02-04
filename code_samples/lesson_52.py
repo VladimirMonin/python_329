@@ -6,7 +6,9 @@ Lesson 52
 - Connection
 - Session
 """
-from sqlalchemy import create_engine, Integer, String, Column, select
+import dataclasses
+
+from sqlalchemy import create_engine, Integer, String, Column, select, update, delete
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 # Основные сущности SQLAlchemy 2.0
@@ -60,6 +62,17 @@ class Student(Base):
 
     # def __str__(self):
     #     return f"Студент: {self.name} {self.last_name}, {self.faculty}. Юзернейм: {self.username}"
+
+
+class StudentData:
+    id: int
+    username: str
+    name: str
+    last_name: str
+    email: str
+    password: str
+    teacher: str
+    faculty: str
 
 
 # Создание таблицы в базе данных
@@ -158,9 +171,81 @@ first - первое значение
 #         print(student)
 
 
-# SELECT username name last_name FROM student WHERE id = 1
-with Session() as session:
-    stmt = select(Student).where(Student.id == 1) #
-    result = session.execute(stmt)
-    student = result.scalars().first()
-    print(student.name, student.last_name, student.username)
+# SELECT username name last_name FROM student WHERE faculty = "Информационные технологии"
+# SELECT username, name, last_name FROM student WHERE faculty = "Информационные технологии" LIMIT 1 OFFSET 1
+# todo Почему идут репры, при выборке всего, но при выборке столбцов идут кортежи?
+# todo Получение чистых данных?
+
+
+# with Session() as session:
+#     # stmt = select(Student.username, Student.name, Student.last_name).where(Student.faculty == "Информационные технологии")
+#     stmt = select(Student.username, Student.name, Student.last_name).where(
+#         Student.faculty == "Информационные технологии").limit(1).offset(1)
+#     result = session.execute(stmt)
+#     # student = result.all()
+#     # students = result.scalars().one() # one даст ошибку если не найдет или больше одного
+#     # students = result.first()  # first даст None если не найдет
+#     students = result.all()
+#     print(students)
+
+# - Update - обновление данных
+"""
+Для обновления данных используется метод update
+stmt = update(Student).where(Student.username == "vic007").values(username="victor007")
+values - значения, которые будут обновлены
+result = session.execute(stmt)
+
+"""
+
+# with Session() as session:
+#     stmt = update(Student).where(Student.username == "vic007").values(username="victor007")
+#     result = session.execute(stmt)
+#     session.commit()
+#
+#     # Прочитаем и проверим
+#     stmt = select(Student.name, Student.username).where(Student.username == "victor007")
+#     result = session.execute(stmt)
+#     students = result.all()
+#     print(students)
+#
+#     # Добавим еще одного студента
+#     student = Student(
+#         username="yar007",
+#         name="Ярослав",
+#         last_name="Иванов",
+#         email="yarik12@yandex.ru",
+#         password="123456",
+#         teacher="Станислав Козлов",
+#         faculty="Информационные технологии")
+#
+#     session.add(student)
+#     session.commit()
+
+
+# - Delete - удаление данных
+
+
+"""
+Для удаления данных используется метод delete
+stmt = delete(Student).where(Student.username == "yar007")
+"""
+
+# with Session() as session:
+#     # Читаем всех студентов поля имя, фамилия, юзернейм
+#     stmt = select(Student.name, Student.last_name, Student.username)
+#     result = session.execute(stmt)
+#
+#     students = result.all()
+#     print(students)
+#
+#     # Удаляем студента
+#     stmt = delete(Student).where(Student.username == "yar007")
+#     result = session.execute(stmt)
+#     session.commit()
+#
+#     # Читаем всех студентов поля имя, фамилия, юзернейм
+#     stmt = select(Student.name, Student.last_name, Student.username)
+#     result = session.execute(stmt)
+#     students = result.all()
+#
+#     print(students)
