@@ -75,8 +75,17 @@ relationship
 """
 
 
+class Username(Base):
+    __tablename__ = "username"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String, unique=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("student.id"), unique=True)  # Убедитесь, что FK уникальный для один к одному
+    student = relationship("Student", back_populates="username")
+
 class Student(Base):
     __tablename__ = "student"
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
@@ -84,17 +93,7 @@ class Student(Base):
     password = Column(String, nullable=False)
     teacher = Column(String, nullable=False)
     faculty = Column(String, nullable=False)
-    # Указываем связь один к одному, и что "username" обратная связь к  "student"
-    username = relationship("Username", back_populates="student", uselist=False)
-
-
-class Username(Base):
-    __tablename__ = "username"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String, unique=True, nullable=False)
-    user_id = Column(Integer, ForeignKey("student.id"))
-    # Указываем связь один к одному, и что "student" обратная связь к  "username"
-    student = relationship("Student", back_populates="username")
+    username = relationship("Username", back_populates="student", uselist=False)  # Одна запись Username на одного Student
 
 
 # Создание таблицы в базе данных
