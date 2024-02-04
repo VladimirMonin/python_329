@@ -51,6 +51,8 @@ class Student(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=False)
     teacher = Column(String, nullable=False)
@@ -78,6 +80,8 @@ with Session() as session:
     # Создание нового объекта Student
     student = Student(
         username="vic007",
+        name="Виктор",
+        last_name="Иванов",
         email="victor_007@mail.ru",
         password="123456",
         teacher="Станислав Козлов",
