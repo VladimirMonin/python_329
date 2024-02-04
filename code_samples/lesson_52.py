@@ -8,8 +8,8 @@ Lesson 52
 """
 import dataclasses
 
-from sqlalchemy import create_engine, Integer, String, Column, select, update, delete
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import create_engine, Integer, String, Column, select, update, delete, ForeignKey
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 
 # Основные сущности SQLAlchemy 2.0
 # - Engine - движок, который обеспечивает соединение с базой данных
@@ -47,33 +47,6 @@ Base = declarative_base()
 """
 
 
-# Определение модели Student
-class Student(Base):
-    __tablename__ = "student"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String, unique=True, nullable=False)
-    name = Column(String, nullable=False)
-    last_name = Column(String, nullable=False)
-    email = Column(String, unique=True, nullable=False)
-    password = Column(String, nullable=False)
-    teacher = Column(String, nullable=False)
-    faculty = Column(String, nullable=False)
-
-    # def __str__(self):
-    #     return f"Студент: {self.name} {self.last_name}, {self.faculty}. Юзернейм: {self.username}"
-
-
-class StudentData:
-    id: int
-    username: str
-    name: str
-    last_name: str
-    email: str
-    password: str
-    teacher: str
-    faculty: str
-
 
 # Создание таблицы в базе данных
 Base.metadata.create_all(engine)
@@ -92,160 +65,39 @@ Base.metadata.create_all(engine)
 # Создание объекта Session
 Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# with Session() as session:
-#     # Создание нового объекта Student
-#     student = Student(
-#         username="vic007",
-#         name="Виктор",
-#         last_name="Иванов",
-#         email="victor_007@mail.ru",
-#         password="123456",
-#         teacher="Станислав Козлов",
-#         faculty="Информационные технологии")
-#
-#     # Добавление объекта в сессию
-#     session.add(student)
-#
-#     # Подтверждение транзакции
-#     session.commit()
-
-# Добавление нескольких объектов в базу данных
-# with Session() as session:
-#     students = [
-#         Student(
-#             username="alex007",
-#             name="Алексей",
-#             last_name="Смирнов",
-#             email="alex@mail.ru",
-#             password="123456",
-#             teacher="Елена Гудкова",
-#             faculty="Информационные технологии")
-#     ]
-#     session.add_all(students)
-#     session.commit()
-
-
-# Этот запрос без контекстного менеджера whith
-
-# session = Session()
-# student = Student(
-#     username="vic007",
-#     name="Виктор",
-#     last_name="Иванов",
-#     email="
-#     password="123456",
-#     teacher="Станислав Козлов",
-#     faculty="Информационные технологии")
-# session.add(student)
-# session.commit()
-# session.close()
-
-
-# - Read - чтение данных
 """
-1. Создание движка
-2. Создание сессии
-3. Формирование запроса
-4. Выполнение запроса
-5. Получение данных
+Отношения в таблице один к одному
+- Один студент может иметь только один юзернейм
+- Один юзернейм может принадлежать только одному студенту
 
-
-Для операций чтения данных используется select
-Это инструмент появившийся не так давно
-
-stmt = select(Student) - формируем запрос
-result = session.execute(stmt) - выполняем запрос
-students = result.scalars().all() - получаем результат
-
-scalars - скалярное значение (одно значение)
-all - все значения
-one - одно значение
-first - первое значение
-"""
-# SELECT * FROM student
-# with Session() as session:
-#     stmt = select(Student)  # stmt - statement (запрос) FROM student SELECT *
-#     result = session.execute(stmt)  # result - результат запроса
-#     students = result.scalars().all()  # scalar - скалярное значение (одно значение), all - все значения
-#     for student in students:
-#         print(student)
-
-
-# SELECT username name last_name FROM student WHERE faculty = "Информационные технологии"
-# SELECT username, name, last_name FROM student WHERE faculty = "Информационные технологии" LIMIT 1 OFFSET 1
-# todo Почему идут репры, при выборке всего, но при выборке столбцов идут кортежи?
-# todo Получение чистых данных?
-
-
-# with Session() as session:
-#     # stmt = select(Student.username, Student.name, Student.last_name).where(Student.faculty == "Информационные технологии")
-#     stmt = select(Student.username, Student.name, Student.last_name).where(
-#         Student.faculty == "Информационные технологии").limit(1).offset(1)
-#     result = session.execute(stmt)
-#     # student = result.all()
-#     # students = result.scalars().one() # one даст ошибку если не найдет или больше одного
-#     # students = result.first()  # first даст None если не найдет
-#     students = result.all()
-#     print(students)
-
-# - Update - обновление данных
-"""
-Для обновления данных используется метод update
-stmt = update(Student).where(Student.username == "vic007").values(username="victor007")
-values - значения, которые будут обновлены
-result = session.execute(stmt)
-
+Отношения в классе прописываются через 
+relationship
 """
 
-# with Session() as session:
-#     stmt = update(Student).where(Student.username == "vic007").values(username="victor007")
-#     result = session.execute(stmt)
-#     session.commit()
-#
-#     # Прочитаем и проверим
-#     stmt = select(Student.name, Student.username).where(Student.username == "victor007")
-#     result = session.execute(stmt)
-#     students = result.all()
-#     print(students)
-#
-#     # Добавим еще одного студента
-#     student = Student(
-#         username="yar007",
-#         name="Ярослав",
-#         last_name="Иванов",
-#         email="yarik12@yandex.ru",
-#         password="123456",
-#         teacher="Станислав Козлов",
-#         faculty="Информационные технологии")
-#
-#     session.add(student)
-#     session.commit()
+
+class Student(Base):
+    __tablename__ = "student"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    password = Column(String, nullable=False)
+    teacher = Column(String, nullable=False)
+    faculty = Column(String, nullable=False)
+    # Указываем связь один к одному, и что "username" обратная связь к  "student"
+    username = relationship("Username", back_populates="student", uselist=False)
 
 
-# - Delete - удаление данных
+class Username(Base):
+    __tablename__ = "username"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String, unique=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("student.id"))
+    # Указываем связь один к одному, и что "student" обратная связь к  "username"
+    student = relationship("Student", back_populates="username")
 
 
-"""
-Для удаления данных используется метод delete
-stmt = delete(Student).where(Student.username == "yar007")
-"""
+# Создание таблицы в базе данных
+Base.metadata.create_all(engine)
 
-# with Session() as session:
-#     # Читаем всех студентов поля имя, фамилия, юзернейм
-#     stmt = select(Student.name, Student.last_name, Student.username)
-#     result = session.execute(stmt)
-#
-#     students = result.all()
-#     print(students)
-#
-#     # Удаляем студента
-#     stmt = delete(Student).where(Student.username == "yar007")
-#     result = session.execute(stmt)
-#     session.commit()
-#
-#     # Читаем всех студентов поля имя, фамилия, юзернейм
-#     stmt = select(Student.name, Student.last_name, Student.username)
-#     result = session.execute(stmt)
-#     students = result.all()
-#
-#     print(students)
+
