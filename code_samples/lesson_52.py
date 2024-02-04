@@ -58,8 +58,8 @@ class Student(Base):
     teacher = Column(String, nullable=False)
     faculty = Column(String, nullable=False)
 
-    def __str__(self):
-        return f"Студент: {self.name} {self.last_name}, {self.faculty}. Юзернейм: {self.username}"
+    # def __str__(self):
+    #     return f"Студент: {self.name} {self.last_name}, {self.faculty}. Юзернейм: {self.username}"
 
 
 # Создание таблицы в базе данных
@@ -128,7 +128,6 @@ Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # session.close()
 
 
-
 # - Read - чтение данных
 """
 1. Создание движка
@@ -145,11 +144,23 @@ stmt = select(Student) - формируем запрос
 result = session.execute(stmt) - выполняем запрос
 students = result.scalars().all() - получаем результат
 
+scalars - скалярное значение (одно значение)
+all - все значения
+one - одно значение
+first - первое значение
 """
+# SELECT * FROM student
+# with Session() as session:
+#     stmt = select(Student)  # stmt - statement (запрос) FROM student SELECT *
+#     result = session.execute(stmt)  # result - результат запроса
+#     students = result.scalars().all()  # scalar - скалярное значение (одно значение), all - все значения
+#     for student in students:
+#         print(student)
 
+
+# SELECT username name last_name FROM student WHERE id = 1
 with Session() as session:
-    stmt = select(Student) # stmt - statement (запрос) FROM student SELECT *
-    result = session.execute(stmt) # result - результат запроса
-    students = result.scalars().all() # scalar - скалярное значение (одно значение), all - все значения
-    for student in students:
-        print(student)
+    stmt = select(Student).where(Student.id == 1) #
+    result = session.execute(stmt)
+    student = result.scalars().first()
+    print(student.name, student.last_name, student.username)
