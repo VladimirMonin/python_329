@@ -76,21 +76,50 @@ Base.metadata.create_all(engine)
 # Создание объекта Session
 Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# with Session() as session:
+#     # Создание нового объекта Student
+#     student = Student(
+#         username="vic007",
+#         name="Виктор",
+#         last_name="Иванов",
+#         email="victor_007@mail.ru",
+#         password="123456",
+#         teacher="Станислав Козлов",
+#         faculty="Информационные технологии")
+#
+#     # Добавление объекта в сессию
+#     session.add(student)
+#
+#     # Подтверждение транзакции
+#     session.commit()
+
+# Добавление нескольких объектов в базу данных
 with Session() as session:
-    # Создание нового объекта Student
-    student = Student(
-        username="vic007",
-        name="Виктор",
-        last_name="Иванов",
-        email="victor_007@mail.ru",
-        password="123456",
-        teacher="Станислав Козлов",
-        faculty="Информационные технологии")
-
-    # Добавление объекта в сессию
-    session.add(student)
-
-    # Подтверждение транзакции
+    students = [
+        Student(
+            username="alex007",
+            name="Алексей",
+            last_name="Смирнов",
+            email="alex@mail.ru",
+            password="123456",
+            teacher="Елена Гудкова",
+            faculty="Информационные технологии")
+    ]
+    session.add_all(students)
     session.commit()
 
 
+# Этот запрос без контекстного менеджера whith
+
+# session = Session()
+# student = Student(
+#     username="vic007",
+#     name="Виктор",
+#     last_name="Иванов",
+#     email="
+#     password="123456",
+#     teacher="Станислав Козлов",
+#     faculty="Информационные технологии")
+# session.add(student)
+# session.commit()
+# session.close()
