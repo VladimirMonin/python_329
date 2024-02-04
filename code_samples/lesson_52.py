@@ -6,7 +6,7 @@ Lesson 52
 - Connection
 - Session
 """
-from sqlalchemy import create_engine, Integer, String, Column
+from sqlalchemy import create_engine, Integer, String, Column, select
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 # Основные сущности SQLAlchemy 2.0
@@ -58,6 +58,9 @@ class Student(Base):
     teacher = Column(String, nullable=False)
     faculty = Column(String, nullable=False)
 
+    def __str__(self):
+        return f"Студент: {self.name} {self.last_name}, {self.faculty}. Юзернейм: {self.username}"
+
 
 # Создание таблицы в базе данных
 Base.metadata.create_all(engine)
@@ -94,19 +97,19 @@ Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 #     session.commit()
 
 # Добавление нескольких объектов в базу данных
-with Session() as session:
-    students = [
-        Student(
-            username="alex007",
-            name="Алексей",
-            last_name="Смирнов",
-            email="alex@mail.ru",
-            password="123456",
-            teacher="Елена Гудкова",
-            faculty="Информационные технологии")
-    ]
-    session.add_all(students)
-    session.commit()
+# with Session() as session:
+#     students = [
+#         Student(
+#             username="alex007",
+#             name="Алексей",
+#             last_name="Смирнов",
+#             email="alex@mail.ru",
+#             password="123456",
+#             teacher="Елена Гудкова",
+#             faculty="Информационные технологии")
+#     ]
+#     session.add_all(students)
+#     session.commit()
 
 
 # Этот запрос без контекстного менеджера whith
@@ -123,3 +126,30 @@ with Session() as session:
 # session.add(student)
 # session.commit()
 # session.close()
+
+
+
+# - Read - чтение данных
+"""
+1. Создание движка
+2. Создание сессии
+3. Формирование запроса
+4. Выполнение запроса
+5. Получение данных
+
+
+Для операций чтения данных используется select
+Это инструмент появившийся не так давно
+
+stmt = select(Student) - формируем запрос
+result = session.execute(stmt) - выполняем запрос
+students = result.scalars().all() - получаем результат
+
+"""
+
+with Session() as session:
+    stmt = select(Student) # stmt - statement (запрос) FROM student SELECT *
+    result = session.execute(stmt) # result - результат запроса
+    students = result.scalars().all() # scalar - скалярное значение (одно значение), all - все значения
+    for student in students:
+        print(student)
