@@ -78,13 +78,14 @@ Base.metadata.create_all(bind=engine)
 
 with Session() as session:
     # Создание пользователя
+    # INSERT INTO users (name, age) VALUES ('John', 30)
     # user = User(name="John", age=30)
     # session.add(user)
     # session.commit()
 
 
     # Получение первого пользователя из базы данных
-    stmt = select(User).limit(1)
+    stmt = select(User)
     result = session.execute(stmt)
     user1 = result.scalars().first()
 
@@ -107,6 +108,11 @@ with Session() as session:
     stmt = select(User).where(User.name == "John", User.age == 30)
     result = session.execute(stmt)
     users4 = result.scalars().all()
+
+    # Получение только возраста
+    stmt = select(User.name, User.age).where(User.age == 30)
+    result = session.execute(stmt)
+    users5 = result.scalars().all()
 
 print(f'User ID: {user1.id}, Name: {user1.name}, Age: {user1.age}')
 

@@ -53,3 +53,4 @@ win_log.md
 /pytest.ini
 /.idea/workspace (2).xml
 /.env
+/data/lesson_52.db
